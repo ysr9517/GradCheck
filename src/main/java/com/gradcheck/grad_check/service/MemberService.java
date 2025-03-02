@@ -2,7 +2,6 @@ package com.gradcheck.grad_check.service;
 
 import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.dto.JwtToken;
-import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.dto.MemberDTO;
 import com.gradcheck.grad_check.dto.SignUpDTO;
 import com.gradcheck.grad_check.repository.MemberRepository;
@@ -14,21 +13,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -68,7 +57,7 @@ public class MemberService {
     public MemberDTO getMemberByUsername(String username) {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("해당 id 찾을 수 없음"));
-        return MemberDTO.fromEntity(member);
+        return MemberDTO.toDTO(member);
     }
 
     //사용자 정보 수정
@@ -86,7 +75,7 @@ public class MemberService {
                 .isDoubleMajor(memberdto.isDoubleMajor())
                 .build();
         Member updateMember = memberRepository.save(member);
-        return MemberDTO.fromEntity(updateMember);
+        return MemberDTO.toDTO(updateMember);
     }
     //사용자 삭제
     public void deleteMember(Long id) {
@@ -100,6 +89,6 @@ public class MemberService {
     public MemberDTO findOne(Long memberId){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
-        return MemberDTO.fromEntity(member);
+        return MemberDTO.toDTO(member);
     }
 }
