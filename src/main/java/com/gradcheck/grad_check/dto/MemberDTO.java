@@ -2,9 +2,7 @@ package com.gradcheck.grad_check.dto;
 
 import com.gradcheck.grad_check.domain.Member;
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -29,6 +27,8 @@ public class MemberDTO {
     private int admissionYear;  // 입학년도
 
     private LocalDate expectedGraduationDate;  // 졸업 예정일
+
+    private boolean isDoubleMajor;
 
     static public MemberDTO toDTO(Member member) {
         return MemberDTO.builder()

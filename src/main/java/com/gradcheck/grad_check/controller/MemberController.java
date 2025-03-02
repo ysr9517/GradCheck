@@ -1,19 +1,27 @@
 package com.gradcheck.grad_check.controller;
 
 import com.gradcheck.grad_check.dto.JwtToken;
+import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.dto.MemberDTO;
 import com.gradcheck.grad_check.dto.SignInDTO;
 import com.gradcheck.grad_check.dto.SignUpDTO;
 import com.gradcheck.grad_check.service.MemberService;
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Getter
 @Setter
@@ -39,4 +47,16 @@ public class MemberController {
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
         return jwtToken;
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MemberDTO> updateMember(@PathVariable Long id,@ModelAttribute MemberDTO memberDTO){
+        return ResponseEntity.ok( memberService.updateMember(id, memberDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id){
+        memberService.deleteMember(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

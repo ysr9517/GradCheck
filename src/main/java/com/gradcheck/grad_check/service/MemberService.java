@@ -1,6 +1,8 @@
 package com.gradcheck.grad_check.service;
 
+import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.dto.JwtToken;
+import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.dto.MemberDTO;
 import com.gradcheck.grad_check.dto.SignUpDTO;
 import com.gradcheck.grad_check.repository.MemberRepository;
@@ -12,7 +14,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +28,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -52,5 +62,44 @@ public class MemberService {
         //List<String> roles = new ArrayList<>();
         //roles.add("USER");  // USER 권한 부여
         return MemberDTO.toDTO(memberRepository.save(signUpDTO.toEntity(encodedPassword)));
+    }
+
+    //사용자 정보 조회
+    public MemberDTO getMemberByUsername(String username) {
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("해당 id 찾을 수 없음"));
+        return MemberDTO.fromEntity(member);
+    }
+
+    //사용자 정보 수정
+    public MemberDTO updateMember(Long id,MemberDTO memberdto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("해당 id를 찾을 수 없습니다."));
+        member = Member.builder()
+                .id(member.getId())
+                .username(memberdto.getUsername())
+                .password(member.getPassword())
+                .university(memberdto.getUniversity())
+                .department(memberdto.getDepartment())
+                .admissionYear(memberdto.getAdmissionYear())
+                .expectedGraduationDate(memberdto.getExpectedGraduationDate())
+                .isDoubleMajor(memberdto.isDoubleMajor())
+                .build();
+        Member updateMember = memberRepository.save(member);
+        return MemberDTO.fromEntity(updateMember);
+    }
+    //사용자 삭제
+    public void deleteMember(Long id) {
+        if (!memberRepository.existsById(id)) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+        memberRepository.deleteById(id);
+    }
+
+    //ID로 조회 테스트용
+    public MemberDTO findOne(Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
+        return MemberDTO.fromEntity(member);
     }
 }
