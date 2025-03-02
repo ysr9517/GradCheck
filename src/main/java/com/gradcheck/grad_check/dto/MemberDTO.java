@@ -1,9 +1,8 @@
 package com.gradcheck.grad_check.dto;
 
+import com.gradcheck.grad_check.domain.Member;
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -13,10 +12,12 @@ import java.time.LocalDate;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class MemberDTO {
-    private Long id;  // 고유 식별자
 
     private String password;  // 비밀번호
+
+    private String username;
 
     private String university;  // 대학교
 
@@ -25,4 +26,17 @@ public class MemberDTO {
     private int admissionYear;  // 입학년도
 
     private LocalDate expectedGraduationDate;  // 졸업 예정일
+
+    private boolean isDoubleMajor;
+
+    public static MemberDTO fromEntity(Member member) {
+        return MemberDTO.builder()
+                .username(member.getUsername())
+                .university(member.getUniversity())
+                .department(member.getDepartment())
+                .admissionYear(member.getAdmissionYear())
+                .expectedGraduationDate(member.getExpectedGraduationDate())
+                .isDoubleMajor(member.isDoubleMajor())
+                .build();
+    }
 }
