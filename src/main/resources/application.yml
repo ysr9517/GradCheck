@@ -6,6 +6,12 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/gradcheck?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://grad-check.mysql.database.azure.com:3306/gradcheck
     username: gradcheck
-    password: 1234
+    password: M9@Lp$3Xv!Kw5#t
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  secret: fF8yY1p9T3h5Q2VqM3hMVm5ZRmdYd2VBTk9BRXhZVlU

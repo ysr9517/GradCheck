@@ -1,13 +1,16 @@
 package com.gradcheck.grad_check.repository;
 
+import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.dto.MemberDTO;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public class MemberRepository {
-    public void signIn(MemberDTO memberdto) {
-    }
+import java.util.Optional;
 
-    public void signUp(MemberDTO memberdto) {
-    }
+@Repository
+public interface MemberRepository extends JpaRepository<Member, Long> {
+
+    Optional<Member> findByUsername(String username);
+
+    boolean existsByUsername(String username);
 }
