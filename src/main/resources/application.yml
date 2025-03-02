@@ -10,8 +10,11 @@ spring:
     username: gradcheck
     password: M9@Lp$3Xv!Kw5#t
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
+    show-sql: true
 
+# jwt
 jwt:
   secret: fF8yY1p9T3h5Q2VqM3hMVm5ZRmdYd2VBTk9BRXhZVlU
