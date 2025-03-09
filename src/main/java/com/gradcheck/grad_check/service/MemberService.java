@@ -1,6 +1,9 @@
 package com.gradcheck.grad_check.service;
 
+import com.gradcheck.grad_check.domain.CompletedCourse;
+import com.gradcheck.grad_check.domain.Course;
 import com.gradcheck.grad_check.domain.Member;
+import com.gradcheck.grad_check.dto.CourseDto;
 import com.gradcheck.grad_check.dto.JwtToken;
 import com.gradcheck.grad_check.dto.MemberDTO;
 import com.gradcheck.grad_check.dto.SignUpDTO;
@@ -14,6 +17,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -91,4 +97,19 @@ public class MemberService {
                 .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
         return MemberDTO.toDTO(member);
     }
+
+    //이수한 과목 전부 찾기
+    public List<CourseDto> findAllCourses(Long userId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(()->new IllegalStateException("회원이 존재하지 않습니다."));
+
+        List<CourseDto> courseList = new ArrayList<>();
+        List<CompletedCourse> completedCourses = member.getCompletedCourses();
+
+        for(CompletedCourse completedCourse:completedCourses){
+            courseList.add(CourseDto.from(completedCourse.getCourse()));
+        }
+        return courseList;
+    }
+
 }

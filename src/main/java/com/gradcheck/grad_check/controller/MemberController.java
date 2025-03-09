@@ -1,10 +1,9 @@
 package com.gradcheck.grad_check.controller;
 
-import com.gradcheck.grad_check.dto.JwtToken;
+import com.gradcheck.grad_check.domain.CompletedCourse;
+import com.gradcheck.grad_check.dto.*;
 import com.gradcheck.grad_check.domain.Member;
-import com.gradcheck.grad_check.dto.MemberDTO;
-import com.gradcheck.grad_check.dto.SignInDTO;
-import com.gradcheck.grad_check.dto.SignUpDTO;
+import com.gradcheck.grad_check.service.CompletedCourseService;
 import com.gradcheck.grad_check.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -22,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,6 +31,7 @@ import java.security.Principal;
 public class MemberController {
 
     private final MemberService memberService;
+    private final CompletedCourseService completedCourseService;
 
     @PostMapping("/sign-up")
     public ResponseEntity<MemberDTO> signUp(@RequestBody SignUpDTO signUpDto) {
@@ -59,4 +60,21 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    //이수과목 찾기
+    @GetMapping
+    public List<CourseDto> getUserCompletedCourses(@PathVariable Long memberId) {
+        return memberService.findAllCourses(memberId);
+    }
+    //이수과목 추가
+    @PostMapping("/{courseId}")
+    public ResponseEntity<CompletedCourse> addCompletedCourse(@PathVariable Long memberId, @PathVariable Long courseId,@PathVariable int grade) {
+        CompletedCourse completedCourse= completedCourseService.createCompletedCourse(memberId, courseId,grade);
+        return ResponseEntity.ok(completedCourse);
+    }
+    //이수과목 삭제
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<Void> deleteCompletCourse(@PathVariable Long userId, @PathVariable Long courseId){
+        completedCourseService.deleteCourse(userId, courseId);
+        return ResponseEntity.noContent().build();
+    }
 }
