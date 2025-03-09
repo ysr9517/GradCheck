@@ -19,13 +19,9 @@ public class CourseService {
 
 
     //전체 과목 조회
-    public List<CourseDto> findByCourse() {
-        List<Course> courses = courseRepository.findAll();
-        List<CourseDto> courseDtos = new ArrayList<>();
-        for(Course course : courses){
-            courseDtos.add(CourseDto.from(course));
-        }
-        return courseDtos;
+    public List<Course> findByCourse() {
+
+        return courseRepository.findAll();
     }
 
     //과목 만들기

@@ -1,5 +1,6 @@
 package com.gradcheck.grad_check.controller;
 
+import com.gradcheck.grad_check.domain.Course;
 import com.gradcheck.grad_check.dto.CourseDto;
 import com.gradcheck.grad_check.service.CourseService;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class CourseController {
 
     //전체과목 조회
     @GetMapping
-    public List<CourseDto> getAllCourses(){
+    public List<Course> getAllCourses(){
         return courseService.findByCourse();
     }
 
