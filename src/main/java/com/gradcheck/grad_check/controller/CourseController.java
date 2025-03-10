@@ -17,7 +17,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Controller
+@RestController
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
 public class CourseController {
@@ -25,7 +25,7 @@ public class CourseController {
 
     //전체과목 조회
     @GetMapping
-    public List<Course> getAllCourses(){
+    public List<CourseDto> getAllCourses(){
         return courseService.findByCourse();
     }
 
@@ -37,7 +37,7 @@ public class CourseController {
     }
 
     //과목 추가
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CourseDto> createCourse(@RequestBody @Valid CourseDto courseDTO) {
         CourseDto savedCourse = courseService.createCourse(courseDTO);
@@ -45,7 +45,7 @@ public class CourseController {
     }
 
     // 과목 정보 수정
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CourseDto> updateCourse(@PathVariable Long id, @RequestBody @Valid CourseDto courseDTO) {
         CourseDto updatedCourse = courseService.updateCourse(id, courseDTO);
@@ -53,7 +53,7 @@ public class CourseController {
     }
 
     // 과목 삭제
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);

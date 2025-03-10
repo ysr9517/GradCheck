@@ -25,8 +25,9 @@ import java.util.List;
 
 @Getter
 @Setter
-@Controller
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/members")
 @Slf4j
 public class MemberController {
 
@@ -61,20 +62,20 @@ public class MemberController {
     }
 
     //이수과목 찾기
-    @GetMapping
-    public List<CourseDto> getUserCompletedCourses(@PathVariable Long memberId) {
-        return memberService.findAllCourses(memberId);
+    @GetMapping("/{memberId}")
+    public List<CompletedCourseDto> getUserCompletedCourses(@PathVariable Long memberId) {
+        return completedCourseService.findAllCompletedCourses(memberId);
     }
     //이수과목 추가
-    @PostMapping("/{courseId}")
-    public ResponseEntity<CompletedCourse> addCompletedCourse(@PathVariable Long memberId, @PathVariable Long courseId,@PathVariable int grade) {
-        CompletedCourse completedCourse= completedCourseService.createCompletedCourse(memberId, courseId,grade);
+    @PostMapping("/{memberId}/completed-courses")
+    public ResponseEntity<CompletedCourseDto> addCompletedCourse(@PathVariable Long memberId,@RequestBody CompletedCourseRequest request) {
+        CompletedCourseDto completedCourse= completedCourseService.createCompletedCourse(memberId, request.getCourseId(), request.getGrade());
         return ResponseEntity.ok(completedCourse);
     }
     //이수과목 삭제
-    @DeleteMapping("/{courseId}")
-    public ResponseEntity<Void> deleteCompletCourse(@PathVariable Long userId, @PathVariable Long courseId){
-        completedCourseService.deleteCourse(userId, courseId);
+    @DeleteMapping("/{memberId}/{courseId}")
+    public ResponseEntity<Void> deleteCompletCourse(@PathVariable Long memberId, @PathVariable Long courseId) {
+        completedCourseService.deleteCourse(memberId, courseId);
         return ResponseEntity.noContent().build();
     }
 }

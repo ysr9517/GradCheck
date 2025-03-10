@@ -98,18 +98,6 @@ public class MemberService {
         return MemberDTO.toDTO(member);
     }
 
-    //이수한 과목 전부 찾기
-    public List<CourseDto> findAllCourses(Long userId) {
-        Member member = memberRepository.findById(userId)
-                .orElseThrow(()->new IllegalStateException("회원이 존재하지 않습니다."));
 
-        List<CourseDto> courseList = new ArrayList<>();
-        List<CompletedCourse> completedCourses = member.getCompletedCourses();
-
-        for(CompletedCourse completedCourse:completedCourses){
-            courseList.add(CourseDto.from(completedCourse.getCourse()));
-        }
-        return courseList;
-    }
 
 }

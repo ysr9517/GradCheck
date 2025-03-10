@@ -19,9 +19,13 @@ public class CourseService {
 
 
     //전체 과목 조회
-    public List<Course> findByCourse() {
-
-        return courseRepository.findAll();
+    public List<CourseDto> findByCourse() {
+        List<Course> courses = courseRepository.findAll();
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (Course course : courses) {
+            courseDtos.add(CourseDto.from(course));
+        }
+        return courseDtos;
     }
 
     //과목 만들기
@@ -39,7 +43,7 @@ public class CourseService {
     //과목 이름으로 찾기
     public CourseDto findCourseByName(String name) {
 
-        return CourseDto.from(courseRepository.findByCourseName(name).orElseThrow(()
+        return CourseDto.from(courseRepository.findByName(name).orElseThrow(()
                 -> new RuntimeException("해당 과목 찾을 수 없음")));
     }
     //과목 id로 찾기
@@ -55,13 +59,12 @@ public class CourseService {
                 .orElseThrow(() -> new RuntimeException("해당 과목을 찾을 수 없음"));
 
         Course updatedCourse = Course.builder()
+                .id(course.getId())
                 .name(courseDto.getName())
                 .credit(courseDto.getCredit())
                 .category(courseDto.getCategory())
                 .department(courseDto.getDepartment())
                 .isRequired(courseDto.isRequired())
-                .completedCourses(course.getCompletedCourses())
-                .curriculums(course.getCurriculums())
                 .build();
 
         return CourseDto.from(courseRepository.save(updatedCourse));
