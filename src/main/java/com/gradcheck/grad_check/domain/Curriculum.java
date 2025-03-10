@@ -12,7 +12,7 @@ import java.util.List;
 @Getter @Setter
 public class Curriculum {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "curriculum_id")
     private Long id;
 
