@@ -17,7 +17,7 @@ public class Curriculum {
 
     private String department;
 
-    private LocalDate admissionYear;
+    private int admissionYear;
 
     private int requiredMajorCredits;
 
