@@ -2,6 +2,7 @@ package com.gradcheck.grad_check.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gradcheck.grad_check.domain.Curriculum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,7 @@ public class CurriculumRequest {
 
     @JsonProperty("admission_year")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate admissionYear;
+    private int admissionYear;
 
     @JsonProperty("required_major_credits")
     private int requiredMajorCredits;
@@ -28,4 +29,16 @@ public class CurriculumRequest {
 
     @JsonProperty("requiredbsm")
     private int requiredBSM;
+
+    public Curriculum toEntity() {
+        return Curriculum.builder()
+                .department(department)
+                .admissionYear(admissionYear)
+                .requiredMajorCredits(requiredMajorCredits)
+                .requiredGeneralCredits(requiredGeneralCredits)
+                .requiredMSC(requiredMSC)
+                .requiredBSM(requiredBSM)
+                .build();
+    }
+
 }

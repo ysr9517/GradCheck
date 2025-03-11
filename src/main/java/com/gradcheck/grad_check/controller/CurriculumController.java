@@ -22,7 +22,7 @@ public class CurriculumController {
     // 특정 학과 및 입학년도 커리큘럼 조회
     @GetMapping("/{department}/{year}")
     public ResponseEntity<CurriculumResponse> getCurriculum(
-            @PathVariable String department, @PathVariable LocalDate year) {
+            @PathVariable String department, @PathVariable int year) {
         return ResponseEntity.ok(curriculumService.getCurriculum(department, year));
     }
 

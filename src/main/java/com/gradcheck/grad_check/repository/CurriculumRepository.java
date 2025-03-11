@@ -10,4 +10,8 @@ import java.util.Optional;
 @Repository
 public interface CurriculumRepository extends JpaRepository<Curriculum, Integer> {
     public Optional<Curriculum> findByDepartmentAndAdmissionYear(String department, int admissionYear);
+
+    public Optional<Curriculum> findById(Long id);
+
+    public Optional<Curriculum> deleteById(Long id);
 }

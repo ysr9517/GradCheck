@@ -1,15 +1,19 @@
 package com.gradcheck.grad_check.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Curriculum {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,7 +22,7 @@ public class Curriculum {
 
     private String department;
 
-    private LocalDate admissionYear;
+    private int admissionYear;
 
     private int requiredMajorCredits;
 

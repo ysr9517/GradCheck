@@ -17,7 +17,7 @@ public class CurriculumService {
     private final CurriculumRepository curriculumRepository;
 
     // 특정 학과 & 입학년도 커리큘럼 조회
-    public CurriculumResponse getCurriculum(String department, LocalDate year) {
+    public CurriculumResponse getCurriculum(String department, int year) {
         Curriculum curriculum = curriculumRepository.findByDepartmentAndAdmissionYear(department, year)
                 .orElseThrow(() -> new RuntimeException("해당 커리큘럼을 찾을 수 없습니다."));
         return new CurriculumResponse(curriculum);
@@ -30,38 +30,24 @@ public class CurriculumService {
                 .collect(Collectors.toList());
     }
 
-    // 새로운 커리큘럼 등록
     public CurriculumResponse createCurriculum(CurriculumRequest request) {
-        Curriculum curriculum = new Curriculum();
-        curriculum.setDepartment(request.getDepartment());
-        curriculum.setAdmissionYear(request.getAdmissionYear());
-        curriculum.setRequiredMajorCredits(request.getRequiredMajorCredits());
-        curriculum.setRequiredGeneralCredits(request.getRequiredGeneralCredits());
-        curriculum.setRequiredMSC(request.getRequiredMSC());
-        curriculum.setRequiredBSM(request.getRequiredBSM());
-
+        Curriculum curriculum = request.toEntity();  // DTO에서 변환
         Curriculum savedCurriculum = curriculumRepository.save(curriculum);
         return new CurriculumResponse(savedCurriculum);
     }
 
-    // 커리큘럼 업데이트
     public CurriculumResponse updateCurriculum(Long id, CurriculumRequest request) {
         Curriculum curriculum = curriculumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 커리큘럼을 찾을 수 없습니다."));
 
-        curriculum.setDepartment(request.getDepartment());
-        curriculum.setAdmissionYear(request.getAdmissionYear());
-        curriculum.setRequiredMajorCredits(request.getRequiredMajorCredits());
-        curriculum.setRequiredGeneralCredits(request.getRequiredGeneralCredits());
-        curriculum.setRequiredMSC(request.getRequiredMSC());
-        curriculum.setRequiredBSM(request.getRequiredBSM());
+        Curriculum updatedCurriculum = request.toEntity();
+        curriculumRepository.save(updatedCurriculum);
 
-        Curriculum updatedCurriculum = curriculumRepository.save(curriculum);
         return new CurriculumResponse(updatedCurriculum);
+
     }
 
-    // 커리큘럼 삭제
-    public void deleteCurriculum(Long id) {
+    public void deleteCurriculum (Long id){
         curriculumRepository.deleteById(id);
     }
 }

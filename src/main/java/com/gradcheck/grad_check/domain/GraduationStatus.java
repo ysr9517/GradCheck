@@ -25,11 +25,11 @@ public class GraduationStatus {
 
     private int bsmCreditsCompleted;
 
-    private int mandatoryCoursesCompleted;
+    private int doubleMajorCreditsCompleted;
+
+    private boolean mandatoryCoursesCompleted;
 
     private boolean graduationThesisStatus;
 
     private boolean humanRightsEducationCompleted;
-
-    private boolean doubleMajorCreditsCompleted;
 }

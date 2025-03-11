@@ -14,7 +14,7 @@ public class CurriculumResponse {
     private String department;
 
     @JsonProperty("admission_year")
-    private LocalDate admissionYear;
+    private int admissionYear;
 
     @JsonProperty("required_major_credits")
     private int requiredMajorCredits;
