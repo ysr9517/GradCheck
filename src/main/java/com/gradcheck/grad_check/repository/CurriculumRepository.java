@@ -4,6 +4,7 @@ import com.gradcheck.grad_check.domain.Curriculum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository

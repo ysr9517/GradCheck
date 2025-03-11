@@ -2,22 +2,23 @@ package com.gradcheck.grad_check.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 public class Curriculum {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "curriculum_id")
     private Long id;
 
     private String department;
 
-    private int admissionYear;
+    private LocalDate admissionYear;
 
     private int requiredMajorCredits;
 
@@ -40,4 +41,7 @@ public class Curriculum {
     @OneToMany(mappedBy = "curriculum")
     private List<GraduationRequirement> graduationRequirements = new ArrayList<>();
 
+    public void addCourse(Course course) {
+        this.courses.add(course);
+    }
 }
