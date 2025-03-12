@@ -1,62 +1,75 @@
 package com.gradcheck.grad_check.controller;
 
-import com.gradcheck.grad_check.domain.Course;
 import com.gradcheck.grad_check.dto.CourseDto;
 import com.gradcheck.grad_check.service.CourseService;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Getter
-@Setter
-@RestController
-@RequestMapping("/api/courses")
+@Controller
 @RequiredArgsConstructor
+@RequestMapping("/api/courses")
 public class CourseController {
     private final CourseService courseService;
 
     //전체과목 조회
     @GetMapping
-    public List<CourseDto> getAllCourses(){
-        return courseService.findByCourse();
+    public String getAllCourses(Model model) {
+        List<CourseDto> courseDtos = courseService.findByCourse();
+        model.addAttribute("courses", courseDtos);
+        return "/api/courseList";
     }
 
     //특정과목 조회
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
+    public String getCourse(@PathVariable Long id, Model model) {
         CourseDto course = courseService.findCourseById(id);
-        return ResponseEntity.ok(course);
+        model.addAttribute("course", course);
+        return "courseDetail";
     }
 
     //과목 추가
-//    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@RequestBody @Valid CourseDto courseDTO) {
-        CourseDto savedCourse = courseService.createCourse(courseDTO);
-        return ResponseEntity.ok(savedCourse);
+    public void createCourse(@RequestParam String name,
+                             @RequestParam int credit,
+                             @RequestParam String category,
+                             @RequestParam String department,
+                             @RequestParam(required = false, defaultValue = "false") boolean required) {
+        CourseDto courseDto = CourseDto.builder()
+                .name(name)
+                .credit(credit)
+                .category(category)
+                .department(department)
+                .isRequired(required)
+                .build();
+        courseService.createCourse(courseDto);
+    }
+    // 과목 수정 페이지 이동
+    @GetMapping("/{id}/edit")
+    public String editCourse(@PathVariable Long id, Model model) {
+        CourseDto courseDto = courseService.findCourseById(id);
+        model.addAttribute("course", courseDto);
+        return "editCourse"; // editCourse.html로 이동
     }
 
     // 과목 정보 수정
 //    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public ResponseEntity<CourseDto> updateCourse(@PathVariable Long id, @RequestBody @Valid CourseDto courseDTO) {
-        CourseDto updatedCourse = courseService.updateCourse(id, courseDTO);
-        return ResponseEntity.ok(updatedCourse);
+    @PostMapping("/{id}")
+    public String updateCourse(@PathVariable Long id, @ModelAttribute("course") @Valid CourseDto courseDTO) {
+        courseService.updateCourse(id, courseDTO);
+        return "redirect:/api/courses";
     }
 
     // 과목 삭제
 //    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+    @PostMapping("/{id}/delete")
+    public String deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/api/courses";
     }
 }

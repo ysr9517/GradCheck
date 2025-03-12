@@ -29,7 +29,6 @@ public class CompletedCourseService {
                 .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
-
         CompletedCourse completedCourse = CompletedCourse.builder()
                 .member(member)
                 .course(course)
@@ -43,13 +42,11 @@ public class CompletedCourseService {
     public void deleteCourse(Long memberId, Long courseId) {
         CompletedCourse completedCourse = completedCourseRepository.findByMemberIdAndCourseId(memberId, courseId)
                 .orElseThrow(() -> new RuntimeException("해당 이수 과목을 찾을 수 없음"));
-
         completedCourseRepository.delete(completedCourse);
     }
     public List<CompletedCourseDto> findAllCompletedCourses(Long userId) {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(()->new IllegalStateException("회원이 존재하지 않습니다."));
-
         List<CompletedCourse> completedCourses = member.getCompletedCourses();
         List<CompletedCourseDto> completedCourseDtos = new ArrayList<>();
         for(CompletedCourse completedCourse:completedCourses){
