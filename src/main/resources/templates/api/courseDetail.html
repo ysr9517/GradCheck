@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+    <h2>과목 상세 정보</h2>
+    <table class="table table-bordered">
+        <tr>
+            <th>과목 ID</th>
+            <td th:text="${course.id}"></td>
+        </tr>
+        <tr>
+            <th>과목명</th>
+            <td th:text="${course.name}"></td>
+        </tr>
+        <tr>
+            <th>학점</th>
+            <td th:text="${course.credit}"></td>
+        </tr>
+        <tr>
+            <th>카테고리</th>
+            <td th:text="${course.category}"></td>
+        </tr>
+        <tr>
+            <th>학과</th>
+            <td th:text="${course.department}"></td>
+        </tr>
+        <tr>
+            <th>필수 여부</th>
+            <td th:text="${course.isRequired ? '필수' : '선택'}"></td>
+        </tr>
+    </table>
+
+    <a href="/api/courses" class="btn btn-secondary">목록으로</a>
+
+    <br/>
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
+</html>

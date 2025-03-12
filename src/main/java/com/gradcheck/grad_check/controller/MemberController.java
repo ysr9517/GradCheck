@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-@Getter
-@Setter
-@RestController
+@Controller
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/member")

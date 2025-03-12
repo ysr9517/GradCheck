@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>과목 리스트</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2>과목 목록</h2>
+    <table class="course-table">
+        <thead>
+        <tr>
+            <th>과목 ID</th>
+            <th>과목명</th>
+            <th>학점</th>
+            <th>카테고리</th>
+            <th>학과</th>
+            <th>필수 여부</th>
+            <th>수정</th>
+            <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="course : ${courses}">
+            <td th:text="${course.id}"></td>
+            <td th:text="${course.name}"></td>
+            <td th:text="${course.credit}"></td>
+            <td th:text="${course.category}"></td>
+            <td th:text="${course.department}"></td>
+            <td th:text="${course.required} ? '필수' : '선택'"></td>
+            <td>
+                <a class="btn-edit" th:href="@{/api/courses/{id}/edit(id=${course.id})}">수정</a>
+            </td>
+            <td>
+                <form th:action="@{/api/courses/{id}/delete(id=${course.id})}" method="post" onsubmit="return confirm('삭제하시겠습니까?');">
+                    <button type="submit" class="btn-delete">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>새 과목 추가</h3>
+    <form class="add-course-form" th:action="@{/api/courses}" method="post">
+        <div class="form-group">
+            <label>과목명:</label>
+            <input type="text" name="name" required>
+        </div>
+        <div class="form-group">
+            <label>학점:</label>
+            <input type="number" name="credit" required>
+        </div>
+        <div class="form-group">
+            <label>카테고리:</label>
+            <input type="text" name="category" required>
+        </div>
+        <div class="form-group">
+            <label>학과:</label>
+            <input type="text" name="department" required>
+        </div>
+        <div class="form-group">
+            <label>필수 여부:</label>
+            <input type="checkbox" name="required" value="true">
+        </div>
+        <button type="submit" class="btn-submit">추가</button>
+    </form>
+</div>
+</body>
+</html>
