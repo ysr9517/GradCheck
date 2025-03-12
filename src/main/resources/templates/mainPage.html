@@ -201,7 +201,6 @@
         <table class="course-table">
             <thead>
             <tr>
-                <th>과목 ID</th>
                 <th>과목명</th>
                 <th>학점</th>
                 <th>카테고리</th>
@@ -213,7 +212,6 @@
             </thead>
             <tbody>
             <tr th:each="course : ${courses}">
-                <td th:text="${course.id}"></td>
                 <td th:text="${course.name}"></td>
                 <td th:text="${course.credit}"></td>
                 <td th:text="${course.category}"></td>
