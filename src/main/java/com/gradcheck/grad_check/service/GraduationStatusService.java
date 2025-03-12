@@ -32,6 +32,10 @@ public class GraduationStatusService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
+        Curriculum curriculum = curriculumRepository.findByDepartmentAndAdmissionYear(member.getDepartment(),member.getAdmissionYear())
+                .orElseThrow(() -> new IllegalArgumentException("해당 학과의 졸업 요건을 찾을 수 없습니다."));
+
+
         List<CompletedCourse> completedCourses = completedCourseRepository.findByMemberId(memberId);
 
         int totalCredits = 0;
@@ -58,6 +62,12 @@ public class GraduationStatusService {
             }
         }
 
+        boolean isEligible = totalCredits >= curriculum.getRequiredMajorCredits()+curriculum.getRequiredGeneralCredits()
+                && majorCredits >= curriculum.getRequiredMajorCredits()
+                && generalCredits >= curriculum.getRequiredGeneralCredits()
+                && mscCredits >= curriculum.getRequiredMSC()
+                && bsmCredits >= curriculum.getRequiredBSM();
+
         GraduationStatus graduationStatus = GraduationStatus.builder()
                 .memberId(memberId)
                 .totalCreditsCompleted(totalCredits)
@@ -68,6 +78,7 @@ public class GraduationStatusService {
                 .mandatoryCoursesCompleted(false) //추가 로직 필요
                 .graduationThesisStatus(false) // 추가 로직 필요
                 .humanRightsEducationCompleted(false) // 추가 로직 필요
+                .isGraduationEligible(isEligible)
                 .build();
 
         graduationStatusRepository.save(graduationStatus);

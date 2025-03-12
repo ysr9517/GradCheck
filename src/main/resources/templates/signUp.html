@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+
+        .signup-container {
+            width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        input[type="text"], input[type="password"], input[type="email"], input[type="date"], input[type="number"] {
+            width: 90%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .signup-btn {
+            width: 95%;
+            padding: 14px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .signup-btn:hover {
+            background-color: #002b50;
+        }
+
+        .login-link {
+            margin-top: 15px;
+            display: block;
+            color: #004080;
+            text-decoration: none;
+        }
+
+        .login-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="signup-container">
+    <h2>회원가입</h2>
+    <form id="signUpForm">
+        <input type="text" id="username" name="username" placeholder="아이디" required>
+        <input type="password" id="password" name="password" placeholder="비밀번호" required>
+        <input type="email" id="email" name="email" placeholder="이메일" required>
+        <input type="text" id="university" name="university" placeholder="대학교" required>
+        <input type="text" id="department" name="department" placeholder="학과" required>
+        <input type="number" id="admissionYear" name="admissionYear" placeholder="입학년도" required>
+        <input type="date" id="expectedGraduationDate" name="expectedGraduationDate" required>
+        <button type="submit" class="signup-btn">회원가입</button>
+    </form>
+    <a href="/login" class="login-link">로그인</a>
+</div>
+
+<script>
+    document.getElementById("signUpForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const signUpData = {
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value,
+            email: document.getElementById("email").value,
+            university: document.getElementById("university").value,
+            department: document.getElementById("department").value,
+            admissionYear: document.getElementById("admissionYear").value,
+            expectedGraduationDate: document.getElementById("expectedGraduationDate").value
+        };
+
+        const response = await fetch("/api/member/sign-up", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(signUpData)
+        });
+
+        if (response.ok) {
+            alert("회원가입 성공!");
+            window.location.href = "/login";  // 로그인 페이지로 이동
+        } else {
+            alert("회원가입 실패. 다시 시도해주세요.");
+        }
+    });
+</script>
+
+</body>
+</html>
