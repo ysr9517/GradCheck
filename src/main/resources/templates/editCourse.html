@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2>과목 수정</h2>
-<form th:action="@{/main/{id}(id=${course.id})}" th:object="${course}" method="post">
+<form th:action="@{/api/courses/{id}(id=${course.id})}" th:object="${course}" method="post">
 
     <label>과목명: <input type="text" th:field="*{name}" required></label><br>
     <label>학점: <input type="number" th:field="*{credit}" required></label><br>

@@ -12,7 +12,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/main")
+@RequestMapping("/api/courses")
 public class CourseController {
     private final CourseService courseService;
 
@@ -21,7 +21,7 @@ public class CourseController {
     public String getAllCourses(Model model) {
         List<CourseDto> courseDtos = courseService.findByCourse();
         model.addAttribute("courses", courseDtos);
-        return "/mainPage";
+        return "/api/courseList";
     }
 
     //특정과목 조회
@@ -29,7 +29,7 @@ public class CourseController {
     public String getCourse(@PathVariable Long id, Model model) {
         CourseDto course = courseService.findCourseById(id);
         model.addAttribute("course", course);
-        return "courseDetail";
+        return "/api/courseDetail";
     }
 
     //과목 추가
