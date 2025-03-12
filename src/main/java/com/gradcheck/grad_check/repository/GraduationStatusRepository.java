@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface GraduationStatusRepository extends JpaRepository<GraduationStatus, Long> {
 
-    // Member 엔티티와 연관된 GraduationStatus를 memberId로 조회하는 메서드
     Optional<GraduationStatus> findByMemberId(Long memberId);
 }

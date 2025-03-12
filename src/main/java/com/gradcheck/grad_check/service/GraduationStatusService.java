@@ -1,15 +1,21 @@
 package com.gradcheck.grad_check.service;
 
-import com.gradcheck.grad_check.domain.Curriculum;
-import com.gradcheck.grad_check.domain.GraduationStatus;
-import com.gradcheck.grad_check.domain.Member;
+import com.gradcheck.grad_check.domain.*;
 import com.gradcheck.grad_check.dto.GraduationStatusDTO;
+import com.gradcheck.grad_check.repository.CompletedCourseRepository;
 import com.gradcheck.grad_check.repository.CurriculumRepository;
 import com.gradcheck.grad_check.repository.GraduationStatusRepository;
 import com.gradcheck.grad_check.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,39 +24,53 @@ public class GraduationStatusService {
     private final MemberRepository memberRepository;
     private final GraduationStatusRepository graduationStatusRepository;
     private final CurriculumRepository curriculumRepository;
+    private final CompletedCourseRepository completedCourseRepository;
+    private final ModelMapper modelMapper;
 
-    public GraduationStatusDTO checkGraduationStatus(Long memberId) {
-        // memberId로 Member 조회
+    @Transactional
+    public GraduationStatusDTO createAndUpdateGraduationStatus(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // GraduationStatus 조회
-        GraduationStatus graduationStatus = graduationStatusRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("졸업 상태가 존재하지 않습니다."));
+        List<CompletedCourse> completedCourses = completedCourseRepository.findByMemberId(memberId);
 
-        // 해당 학과의 커리큘럼 조회
-        Curriculum curriculum = curriculumRepository.findByDepartmentAndAdmissionYear(
-                        member.getDepartment(), member.getAdmissionYear())
-                .orElseThrow(() -> new IllegalArgumentException("학과에 해당하는 커리큘럼이 존재하지 않습니다."));
+        int totalCredits = 0;
+        int majorCredits = 0;
+        int generalCredits = 0;
+        int mscCredits = 0;
+        int bsmCredits = 0;
 
-        // 졸업 요건 충족 여부 판단
-        boolean isGraduationEligible = checkGraduationEligibility(graduationStatus, curriculum);
+        for (CompletedCourse completedCourse : completedCourses) {
+            Course course = completedCourse.getCourse();
+            totalCredits += course.getCredit();
 
-        // DTO 변환 후 반환
-        return GraduationStatusDTO.fromEntity(graduationStatus, isGraduationEligible);
-    }
+            if ("전공".equals(course.getCategory())) {
+                majorCredits += course.getCredit();
+            }
+            if ("교양".equals(course.getCategory())) {
+                generalCredits += course.getCredit();
+            }
+            if ("MSC".equals(course.getCategory())) {
+                mscCredits += course.getCredit();
+            }
+            if ("BSM".equals(course.getCategory())) {
+                bsmCredits += course.getCredit();
+            }
+        }
 
-    // 졸업 요건 충족 여부 체크
-    private boolean checkGraduationEligibility(GraduationStatus graduationStatus, Curriculum curriculum) {
-        boolean isCreditsSufficient = graduationStatus.getTotalCreditsCompleted() >= curriculum.getRequiredMajorCredits()
-                && graduationStatus.getGeneralCreditsCompleted() >= curriculum.getRequiredGeneralCredits()
-                && graduationStatus.getMscCreditsCompleted() >= curriculum.getRequiredMSC()
-                && graduationStatus.getBsmCreditsCompleted() >= curriculum.getRequiredBSM();
+        GraduationStatus graduationStatus = GraduationStatus.builder()
+                .memberId(memberId)
+                .totalCreditsCompleted(totalCredits)
+                .majorCreditsCompleted(majorCredits)
+                .generalCreditsCompleted(generalCredits)
+                .mscCreditsCompleted(mscCredits)
+                .bsmCreditsCompleted(bsmCredits)
+                .mandatoryCoursesCompleted(false) //추가 로직 필요
+                .graduationThesisStatus(false) // 추가 로직 필요
+                .humanRightsEducationCompleted(false) // 추가 로직 필요
+                .build();
 
-        boolean isCoursesCompleted = graduationStatus.isMandatoryCoursesCompleted();
-        boolean isThesisSubmitted = graduationStatus.isGraduationThesisStatus();
-        boolean isHumanRightsCompleted = graduationStatus.isHumanRightsEducationCompleted();
-
-        return isCreditsSufficient && isCoursesCompleted && isThesisSubmitted && isHumanRightsCompleted;
+        graduationStatusRepository.save(graduationStatus);
+        return graduationStatus.toDTO(graduationStatus);
     }
 }

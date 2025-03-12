@@ -27,6 +27,4 @@ public class CompletedCourse {
 
     private int grade;
 
-
-
 }

@@ -21,10 +21,8 @@ public class GraduationController {
 
     private final GraduationStatusService graduationStatusService;
 
-    @GetMapping("/status/{memberId}")
-    public ResponseEntity<GraduationStatusDTO> getGraduationStatus(@PathVariable Long memberId) {
-        GraduationStatusDTO graduationStatusDTO = graduationStatusService.checkGraduationStatus(memberId);
-        return ResponseEntity.status(HttpStatus.OK).body(graduationStatusDTO);
+    @PutMapping("/member/{memberId}")
+    public GraduationStatusDTO createOrUpdateGraduationStatus(@PathVariable Long memberId) {
+        return graduationStatusService.createAndUpdateGraduationStatus(memberId);
     }
-
 }

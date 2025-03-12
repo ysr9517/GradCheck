@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter @Setter
+@Getter
 public class CurriculumRequest {
 
     @JsonProperty("department")

@@ -82,9 +82,6 @@ public class Member implements UserDetails {
     @OneToMany(mappedBy = "member")
     private List<CompletedCourse> completedCourses = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member")
-    private GraduationStatus graduationStatus;
-
     @OneToMany(mappedBy = "memberGraduation")
     private List<GraduationCertification> graduationCertifications = new ArrayList<>();
 

@@ -46,6 +46,7 @@ public class CompletedCourseService {
 
         completedCourseRepository.delete(completedCourse);
     }
+
     public List<CompletedCourseDto> findAllCompletedCourses(Long userId) {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(()->new IllegalStateException("회원이 존재하지 않습니다."));
