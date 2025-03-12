@@ -24,7 +24,7 @@ public class CompletedCourseService {
     private final CompletedCourseRepository completedCourseRepository;
 
     @Transactional
-    public CompletedCourseDto createCompletedCourse(Long memberId, Long courseId, int grade) {
+    public CompletedCourseDto createCompletedCourse(Long memberId, Long courseId,int grade) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
         Course course = courseRepository.findById(courseId)

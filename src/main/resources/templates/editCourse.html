@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2>과목 수정</h2>
-<form th:action="@{/api/courses/{id}(id=${course.id})}" th:object="${course}" method="post">
+<form th:action="@{/main/{id}(id=${course.id})}" th:object="${course}" method="post">
 
     <label>과목명: <input type="text" th:field="*{name}" required></label><br>
     <label>학점: <input type="number" th:field="*{credit}" required></label><br>
@@ -15,6 +15,6 @@
     <label>필수 여부: <input type="checkbox" th:field="*{required}"></label><br>
     <button type="submit">수정 완료</button>
 </form>
-<a href="/api/courses">목록으로 돌아가기</a>
+<a href="/main">목록으로 돌아가기</a>
 </body>
 </html>

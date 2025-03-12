@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>이수과목 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2>이수과목 목록</h2>
+    <table class="course-table">
+        <thead>
+        <tr>
+            <th>과목 ID</th>
+            <th>과목명</th>
+            <th>학점</th>
+            <th>성적</th>
+            <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="completedCourse : ${completedCourses}">
+            <td th:text="${completedCourse.course.getName()}"></td>
+            <td th:text="${completedCourse.course.getCategory()}"></td>
+            <td th:text="${completedCourse.course.getCredit()}"></td>
+            <td th:text="${completedCourse.course.getDepartment()}"></td>
+            <td>
+                <form th:action="@{/api/member/{memberId}/completed-courses/{courseId}/delete(memberId=${memberId}, courseId=${completedCourse.course.getId()})}" method="post" onsubmit="return confirm('삭제하시겠습니까?');">
+                    <button type="submit" class="btn-delete">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>새 이수과목 추가</h3>
+    <form class="add-course-form" th:action="@{/api/member/{memberId}/completed-courses(memberId=${memberId})}" method="post">
+        <div class="form-group">
+            <label>과목 ID:</label>
+            <input type="number" name="courseId" required>
+        </div>
+        <div class="form-group">
+            <label>성적:</label>
+            <input type="text" name="grade" required>
+        </div>
+        <button type="submit" class="btn-submit">추가</button>
+    </form>
+</div>
+</body>
+</html>

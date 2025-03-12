@@ -13,14 +13,14 @@ import lombok.*;
 public class CompletedCourseDto {
     private Long id;
     private Long memberId;
-    private Long courseId;
+    private Course course;
     private int grade;
 
     public static CompletedCourseDto form(CompletedCourse completedCourse) {
         return CompletedCourseDto.builder()
                 .id(completedCourse.getId())
                 .memberId(completedCourse.getMember().getId())
-                .courseId(completedCourse.getCourse().getId())
+                .course(completedCourse.getCourse())
                 .grade(completedCourse.getGrade())
                 .build();
     }

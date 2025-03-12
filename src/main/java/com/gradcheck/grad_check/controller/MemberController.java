@@ -1,28 +1,23 @@
 package com.gradcheck.grad_check.controller;
 
-import com.gradcheck.grad_check.domain.CompletedCourse;
 import com.gradcheck.grad_check.dto.*;
-import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.service.CompletedCourseService;
 import com.gradcheck.grad_check.service.MemberService;
-import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
+@Getter
+@Setter
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -59,21 +54,30 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    //이수과목 찾기
-    @GetMapping("/{memberId}")
-    public List<CompletedCourseDto> getUserCompletedCourses(@PathVariable Long memberId) {
-        return completedCourseService.findAllCompletedCourses(memberId);
+    // 이수과목 조회
+    @GetMapping("/{memberId}/completed-courses")
+    public String getCompletedCourses(@PathVariable Long memberId, Model model) {
+        List<CompletedCourseDto> completedCourses = completedCourseService.findAllCompletedCourses(memberId);
+        model.addAttribute("completedCourses", completedCourses);
+        model.addAttribute("memberId", memberId);
+        return "completedCourseList";
     }
-    //이수과목 추가
+
+    // 이수과목 추가
     @PostMapping("/{memberId}/completed-courses")
-    public ResponseEntity<CompletedCourseDto> addCompletedCourse(@PathVariable Long memberId,@RequestBody CompletedCourseRequest request) {
-        CompletedCourseDto completedCourse= completedCourseService.createCompletedCourse(memberId, request.getCourseId(), request.getGrade());
-        return ResponseEntity.ok(completedCourse);
+    public String addCompletedCourse(@PathVariable Long memberId,
+                                     @RequestParam Long courseId,
+                                     @RequestParam int grade) {
+        completedCourseService.createCompletedCourse(memberId, courseId, grade);
+        return "redirect:/api/members/" + memberId + "/completed-courses";
     }
-    //이수과목 삭제
-    @DeleteMapping("/{memberId}/{courseId}")
-    public ResponseEntity<Void> deleteCompletCourse(@PathVariable Long memberId, @PathVariable Long courseId) {
+
+    // 이수과목 삭제
+    @PostMapping("/{memberId}/completed-courses/{courseId}/delete")
+    public String deleteCompletedCourse(@PathVariable Long memberId, @PathVariable Long courseId) {
         completedCourseService.deleteCourse(memberId, courseId);
-        return ResponseEntity.noContent().build();
+        return "redirect:/api/members/" + memberId + "/completed-courses";
     }
+
 }
+

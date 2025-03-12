@@ -12,7 +12,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/courses")
+@RequestMapping("/main")
 public class CourseController {
     private final CourseService courseService;
 
@@ -21,7 +21,7 @@ public class CourseController {
     public String getAllCourses(Model model) {
         List<CourseDto> courseDtos = courseService.findByCourse();
         model.addAttribute("courses", courseDtos);
-        return "/api/courseList";
+        return "/mainPage";
     }
 
     //특정과목 조회
@@ -35,7 +35,7 @@ public class CourseController {
     //과목 추가
     // @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public void createCourse(@RequestParam String name,
+    public String createCourse(@RequestParam String name,
                              @RequestParam int credit,
                              @RequestParam String category,
                              @RequestParam String department,
@@ -48,6 +48,7 @@ public class CourseController {
                 .isRequired(required)
                 .build();
         courseService.createCourse(courseDto);
+        return "redirect:/main";
     }
     // 과목 수정 페이지 이동
     @GetMapping("/{id}/edit")
@@ -62,7 +63,7 @@ public class CourseController {
     @PostMapping("/{id}")
     public String updateCourse(@PathVariable Long id, @ModelAttribute("course") @Valid CourseDto courseDTO) {
         courseService.updateCourse(id, courseDTO);
-        return "redirect:/api/courses";
+        return "redirect:/main";
     }
 
     // 과목 삭제
@@ -70,6 +71,6 @@ public class CourseController {
     @PostMapping("/{id}/delete")
     public String deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
-        return "redirect:/api/courses";
+        return "redirect:/main";
     }
 }
