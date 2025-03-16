@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 public class CurriculumRequest {
@@ -15,7 +16,6 @@ public class CurriculumRequest {
     private String department;
 
     @JsonProperty("admission_year")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private int admissionYear;
 
     @JsonProperty("required_major_credits")
@@ -29,6 +29,8 @@ public class CurriculumRequest {
 
     @JsonProperty("requiredbsm")
     private int requiredBSM;
+
+    private List<Long> courseIds;
 
     public Curriculum toEntity() {
         return Curriculum.builder()

@@ -18,7 +18,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Controller
+@RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/member")

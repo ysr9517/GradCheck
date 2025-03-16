@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>커리큘럼 과목 수정</title>
+    <style>
+        /* 테이블 스타일 */
+        .curriculum-course-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .curriculum-course-table th {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .curriculum-course-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* 버튼 스타일 */
+        .btn-save {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #28a745;
+        }
+
+        .btn-save:hover {
+            background-color: #218838;
+        }
+
+        /* 목록 버튼 스타일 */
+        .btn-list {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-list:hover {
+            background-color: #0056b3;
+        }
+
+        /* 버튼을 수평 정렬하고 중앙 배치 */
+        .btn-container {
+            display: flex;
+            justify-content: center;  /* 중앙 정렬 */
+            gap: 20px;  /* 버튼 간격 */
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<h2>커리큘럼 과목 수정</h2>
+
+<p th:text="'📌 전체 과목 개수: ' + ${#lists.size(allCourses)}"></p>
+
+
+<form th:action="@{/curriculum/{id}/update-courses(id=${curriculum.id})}" method="post">
+    <table class="curriculum-course-table">
+        <thead>
+        <tr>
+            <th>선택</th>
+            <th>과목 ID</th>
+            <th>과목 이름</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="course : ${allCourses}">
+            <td class="checkbox-cell">
+                <input type="checkbox" name="courseIds" th:value="${course.id}" th:checked="${curriculumCourseIds.contains(course.id)}">
+            </td>
+            <td th:text="${course.id}"></td>
+            <td th:text="${course.name}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 버튼 컨테이너 -->
+    <div class="btn-container">
+        <button type="submit" class="btn-save">저장</button>
+        <a th:href="@{/curriculum}" class="btn-list">목록</a>
+    </div>
+</form>
+
+</body>
+</html>
