@@ -62,17 +62,18 @@ public class MemberController {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/getmember")
     public ResponseEntity<MemberDTO> getMember(Principal principal) {
         String username = principal.getName();
         MemberDTO memberDTO = memberService.getMemberByUsername(username);
+        return ResponseEntity.ok(memberDTO);
+    }
 
     @GetMapping("/me/{username}")
     public ResponseEntity<MemberDTO> getMemberDetail(@PathVariable String username) {
         return ResponseEntity.ok(memberService.getMemberByUsername(username));
     }
-
-
 
     //이수과목 찾기
     @GetMapping("/{memberId}")
@@ -80,8 +81,6 @@ public class MemberController {
         return completedCourseService.findAllCompletedCourses(memberId);
     }
 
-        return ResponseEntity.ok(memberDTO);
-    }
 
     // 이수과목 삭제
     @PostMapping("/{memberId}/completed-courses/{courseId}/delete")
