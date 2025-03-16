@@ -188,11 +188,13 @@
         <!-- 내 정보 박스 -->
         <div class="info-box">
             <h3>내 정보</h3>
-            <p><strong>이름:</strong> 홍길동</p>
-            <p><strong>학번:</strong> 2021111234</p>
-            <p><strong>학과:</strong> 컴퓨터공학부</p>
-            <p><strong>입학년도:</strong> 2021</p>
+            <p><strong>이름:</strong> <span id="memberName">로딩 중...</span></p>
+            <p><strong>대학교:</strong> <span id="memberUniversity">로딩 중...</span></p>
+            <p><strong>학과:</strong> <span id="memberDepartment">로딩 중...</span></p>
+            <p><strong>입학년도:</strong> <span id="memberYear">로딩 중...</span></p>
         </div>
+
+
     </div>
 
     <!-- 오른쪽 콘텐츠 영역 -->
@@ -257,6 +259,51 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("token"); // JWT 토큰 가져오기
+
+        if (token) {
+            // JWT 토큰을 디코딩하여 username 추출
+            const decodedToken = JSON.parse(atob(token.split('.')[1])); // JWT 토큰을 디코딩
+            const username = decodedToken.username; // 디코딩된 정보에서 username 추출
+
+            // JWT 토큰이 존재하면, 이를 Authorization 헤더로 사용하여 API 호출
+            fetch(`http://localhost:8080/api/member/me/${username}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    console.log('Response Status:', response.status); // 응답 상태 코드 확인
+                    if (!response.ok) {
+                        throw new Error(`응답 오류: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 사용자 정보 업데이트
+                    document.getElementById('memberName').innerText = data.username;
+                    document.getElementById('memberUniversity').innerText = data.university;
+                    document.getElementById('memberDepartment').innerText = data.department;
+                    document.getElementById('memberYear').innerText = data.admissionYear;
+                })
+                .catch(error => {
+                    console.error('사용자 정보 가져오기 오류:', error);
+                });
+        } else {
+            // JWT 토큰이 없으면 로그인 페이지로 리디렉션
+            alert("로그인 정보가 없습니다. 로그인 후 다시 시도해주세요.");
+            window.location.href = "/login";  // 로그인 페이지로 리디렉션
+        }
+    });
+</script>
+
+
+</script>
+
 
 </body>
 </html>

@@ -1,6 +1,9 @@
 package com.gradcheck.grad_check.security;
 
+import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.dto.JwtToken;
+import com.gradcheck.grad_check.service.CustomMemberDetail;
+import com.gradcheck.grad_check.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -24,32 +27,38 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
     private final Key key;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService customUserDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.customUserDetailsService = customUserDetailsService;
+    }
+
+    public JwtToken generateToken(Authentication authentication) {
+        // 권한 가져오기
+        CustomMemberDetail member = (CustomMemberDetail) authentication.getPrincipal();
+        return generateToken(member);
     }
 
     // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
-    public JwtToken generateToken(Authentication authentication) {
-        // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
+    public JwtToken generateToken(CustomMemberDetail member) {
         long now = (new Date()).getTime();
 
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + 86400000);
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("auth", authorities)
+                .setSubject(String.valueOf(member.getId()))
+                .claim("username", member.getUsername())
+                .claim("auth", member.getAuthorities())
+                .setIssuedAt(new Date())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
+                .setSubject(String.valueOf(member.getId()))
                 .setExpiration(new Date(now + 86400000))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -66,20 +75,11 @@ public class JwtTokenProvider {
         // Jwt 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
-        if (claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
-        }
-
-        // 클레임에서 권한 정보 가져오기
-        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-
-        // UserDetails 객체를 만들어서 Authentication return
-        // UserDetails: interface, User: UserDetails를 구현한 class
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        long id = Long.parseLong(claims.getSubject());
+        UserDetails userDetails = customUserDetailsService.loadUserById(id);
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
+
     // 토큰 정보를 검증하는 메서드
     public boolean validateToken(String token) {
         try {

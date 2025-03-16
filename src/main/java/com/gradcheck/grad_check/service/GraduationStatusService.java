@@ -25,7 +25,6 @@ public class GraduationStatusService {
     private final GraduationStatusRepository graduationStatusRepository;
     private final CurriculumRepository curriculumRepository;
     private final CompletedCourseRepository completedCourseRepository;
-    private final ModelMapper modelMapper;
 
     @Transactional
     public GraduationStatusDTO createAndUpdateGraduationStatus(Long memberId) {

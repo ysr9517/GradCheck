@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -59,13 +60,6 @@ public class MemberService {
         return MemberDTO.toDTO(memberRepository.save(signUpDTO.toEntity(encodedPassword)));
     }
 
-    //사용자 정보 조회
-    public MemberDTO getMemberByUsername(String username) {
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("해당 id 찾을 수 없음"));
-        return MemberDTO.toDTO(member);
-    }
-
     //사용자 정보 수정
     public MemberDTO updateMember(Long id,MemberDTO memberdto) {
         Member member = memberRepository.findById(id)
@@ -91,10 +85,15 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    //ID로 조회 테스트용
-    public MemberDTO findOne(Long memberId){
+    public MemberDTO getMemberById(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
+                .orElseThrow(()->new IllegalStateException("회원이 존재하지 않습니다."));
+        return MemberDTO.toDTO(member);
+    }
+
+    public MemberDTO getMemberByUsername(String username) {
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(()->new IllegalStateException("회원이 존재하지 않습니다."));
         return MemberDTO.toDTO(member);
     }
 
