@@ -38,6 +38,7 @@ public class CompletedCourseService {
                 .grade(grade)
                 .build();
         CompletedCourse saveCourse = completedCourseRepository.save(completedCourse);
+
         return CompletedCourseDto.form(saveCourse);
     }
 

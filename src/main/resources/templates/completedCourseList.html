@@ -20,12 +20,12 @@
         </thead>
         <tbody>
         <tr th:each="completedCourse : ${completedCourses}">
-            <td th:text="${completedCourse.course.getName()}"></td>
-            <td th:text="${completedCourse.course.getCategory()}"></td>
-            <td th:text="${completedCourse.course.getCredit()}"></td>
+            <td th:text="${completedCourse.courseDto.getName()}"></td>
+            <td th:text="${completedCourse.courseDto.getCategory()}"></td>
+            <td th:text="${completedCourse.courseDto.getCredit()}"></td>
             <td th:text="${completedCourse.getGrade()}"></td>
             <td>
-                <form th:action="@{/api/course/{memberId}/completed-courses/{courseId}/delete(memberId=${memberId}, courseId=${completedCourse.course.getId()})}" method="post" onsubmit="return confirm('삭제하시겠습니까?');">
+                <form th:action="@{/api/course/{memberId}/completed-courses/{courseId}/delete(memberId=${memberId}, courseId=${completedCourse.courseDto.getId()})}" method="post" onsubmit="return confirm('삭제하시겠습니까?');">
                     <button type="submit" class="btn-delete">삭제</button>
                 </form>
             </td>
