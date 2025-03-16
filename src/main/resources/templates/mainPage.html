@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>과목 리스트</title>
+    <title>메인 페이지</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         /* 기본 스타일 */
@@ -26,12 +26,12 @@
 
         /* 왼쪽 메뉴바 */
         .sidebar {
-            width: 250px; /* 가로 길이 줄이기 */
+            width: 250px;
             background-color: #004080;
             color: white;
             padding-top: 30px;
             padding-left: 20px;
-            height: 100vh; /* 전체 화면 높이 차지 */
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -47,7 +47,7 @@
 
         .menu-item:hover {
             background-color: #002b50;
-            color: #ffd700; /* 고급스러운 황금색 효과 */
+            color: #ffd700;
         }
 
         /* 내 정보 박스 */
@@ -57,7 +57,7 @@
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin-top: 30px;
-            margin-right: 20px; /* 오른쪽 여백 추가 */
+            margin-right: 20px;
         }
 
         .info-box h3 {
@@ -180,10 +180,10 @@
 
     <!-- 왼쪽 메뉴바 -->
     <div class="sidebar">
-        <div class="menu-item">수강내역 조회/수정</div>
-        <div class="menu-item">커리큘럼 조회/수정</div>
-        <div class="menu-item">과목 조회/수정</div>
-        <div class="menu-item">졸업요건 자가진단</div>
+        <div class="menu-item" onclick="loadContent('/api/course/1/completed-courses')">수강내역 조회/수정</div>
+        <div class="menu-item" onclick="loadContent('/api/curriculum')">커리큘럼 조회/수정</div>
+        <div class="menu-item" onclick="loadContent('/api/courses')">과목 조회/수정</div>
+        <div class="menu-item" onclick="loadContent('/api/graduation')">졸업요건 자가진단</div>
 
         <!-- 내 정보 박스 -->
         <div class="info-box">
@@ -193,74 +193,33 @@
             <p><strong>학과:</strong> <span id="memberDepartment">로딩 중...</span></p>
             <p><strong>입학년도:</strong> <span id="memberYear">로딩 중...</span></p>
         </div>
-
-
     </div>
 
     <!-- 오른쪽 콘텐츠 영역 -->
-    <div class="content">
-        <h2>과목 목록</h2>
-        <table class="course-table">
-            <thead>
-            <tr>
-                <th>과목 ID</th>
-                <th>과목명</th>
-                <th>학점</th>
-                <th>카테고리</th>
-                <th>학과</th>
-                <th>필수 여부</th>
-                <th>수정</th>
-                <th>삭제</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="course : ${courses}">
-                <td th:text="${course.id}"></td>
-                <td th:text="${course.name}"></td>
-                <td th:text="${course.credit}"></td>
-                <td th:text="${course.category}"></td>
-                <td th:text="${course.department}"></td>
-                <td th:text="${course.required} ? '필수' : '선택'"></td>
-                <td>
-                    <a class="btn-edit" th:href="@{/main/{id}/edit(id=${course.id})}">수정</a>
-                </td>
-                <td>
-                    <form th:action="@{/main/{id}/delete(id=${course.id})}" method="post" onsubmit="return confirm('삭제하시겠습니까?');">
-                        <button type="submit" class="btn-delete">삭제</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <h3>새 과목 추가</h3>
-        <form class="add-course-form" th:action="@{/main}" method="post">
-            <div class="form-group">
-                <label>과목명:</label>
-                <input type="text" name="name" required>
-            </div>
-            <div class="form-group">
-                <label>학점:</label>
-                <input type="number" name="credit" required>
-            </div>
-            <div class="form-group">
-                <label>카테고리:</label>
-                <input type="text" name="category" required>
-            </div>
-            <div class="form-group">
-                <label>학과:</label>
-                <input type="text" name="department" required>
-            </div>
-            <div class="form-group">
-                <label>필수 여부:</label>
-                <input type="checkbox" name="required" value="true">
-            </div>
-            <button type="submit" class="btn-submit">추가</button>
-        </form>
+    <div class="content" id="content">
+        <!-- 여기에 동적으로 로드된 콘텐츠가 표시됩니다. -->
     </div>
 </div>
 
 <script>
+    // 동적 콘텐츠 로드 함수
+    function loadContent(url) {
+        const contentDiv = document.getElementById('content');
+
+        // Fetch API를 사용하여 서버에서 HTML 로드
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                contentDiv.innerHTML = data; // 오른쪽 콘텐츠 영역 업데이트
+            })
+            .catch(error => {
+                console.error('Error loading content:', error);
+                contentDiv.innerHTML = '<p>콘텐츠를 로드하는 중 오류가 발생했습니다.</p>';
+            });
+    }
+
+    // 초기 페이지 로드 (기본 페이지)
+    window.onload = () => loadContent('/api/courses');
     document.addEventListener("DOMContentLoaded", function () {
         const token = localStorage.getItem("token"); // JWT 토큰 가져오기
 
@@ -300,10 +259,6 @@
         }
     });
 </script>
-
-
-</script>
-
 
 </body>
 </html>

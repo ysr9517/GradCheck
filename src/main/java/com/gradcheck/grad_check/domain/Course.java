@@ -30,7 +30,7 @@ public class Course {
 
     private boolean isRequired;
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
     @Builder.Default
     private List<CompletedCourse> completedCourses = new ArrayList<>();
 

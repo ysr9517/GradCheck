@@ -11,16 +11,18 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CompletedCourseDto {
+
     private Long id;
     private Long memberId;
-    private Course course;
+    private CourseDto courseDto;
     private int grade;
+
 
     public static CompletedCourseDto form(CompletedCourse completedCourse) {
         return CompletedCourseDto.builder()
                 .id(completedCourse.getId())
                 .memberId(completedCourse.getMember().getId())
-                .course(completedCourse.getCourse())
+                .courseDto(CourseDto.from(completedCourse.getCourse()))
                 .grade(completedCourse.getGrade())
                 .build();
     }

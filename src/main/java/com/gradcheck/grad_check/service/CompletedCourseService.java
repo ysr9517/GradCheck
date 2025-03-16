@@ -29,12 +29,16 @@ public class CompletedCourseService {
                 .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(()-> new RuntimeException("해당 id 찾을 수 없음"));
+        if(completedCourseRepository.existsByMemberIdAndCourseId(memberId, courseId)) {
+            throw new IllegalArgumentException("이미 등록하신 과목입니다.");
+        }
         CompletedCourse completedCourse = CompletedCourse.builder()
                 .member(member)
                 .course(course)
                 .grade(grade)
                 .build();
         CompletedCourse saveCourse = completedCourseRepository.save(completedCourse);
+
         return CompletedCourseDto.form(saveCourse);
     }
 

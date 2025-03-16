@@ -17,8 +17,8 @@ public class LoginController {
         return "signUp"; // signUp.html을 반환합니다.
     }
 
-//    @GetMapping("/main")
-//    public String mainPage() {
-//        return "mainPage"; // main.html 템플릿을 반환
-//    }
+   @GetMapping("/main")
+   public String mainPage() {
+     return "mainPage"; // main.html 템플릿을 반환
+       }
 }

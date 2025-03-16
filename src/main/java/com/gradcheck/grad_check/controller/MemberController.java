@@ -4,6 +4,7 @@ import com.gradcheck.grad_check.domain.CompletedCourse;
 import com.gradcheck.grad_check.dto.*;
 import com.gradcheck.grad_check.domain.Member;
 import com.gradcheck.grad_check.service.CompletedCourseService;
+import com.gradcheck.grad_check.service.CourseService;
 import com.gradcheck.grad_check.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final CompletedCourseService completedCourseService;
-
+    private final CourseService courseService;
     @PostMapping("/sign-up")
     public ResponseEntity<MemberDTO> signUp(@RequestBody SignUpDTO signUpDto) {
         MemberDTO savedMemberDto = memberService.signUp(signUpDto);
@@ -50,16 +51,21 @@ public class MemberController {
         return jwtToken;
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<MemberDTO> updateMember(@PathVariable Long id,@ModelAttribute MemberDTO memberDTO){
-        return ResponseEntity.ok( memberService.updateMember(id, memberDTO));
+    public ResponseEntity<MemberDTO> updateMember(@PathVariable Long id, @ModelAttribute MemberDTO memberDTO) {
+        return ResponseEntity.ok(memberService.updateMember(id, memberDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id){
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/getmember")
+    public ResponseEntity<MemberDTO> getMember(Principal principal) {
+        String username = principal.getName();
+        MemberDTO memberDTO = memberService.getMemberByUsername(username);
 
     @GetMapping("/me/{username}")
     public ResponseEntity<MemberDTO> getMemberDetail(@PathVariable String username) {
@@ -74,13 +80,7 @@ public class MemberController {
         return completedCourseService.findAllCompletedCourses(memberId);
     }
 
-    // 이수과목 추가
-    @PostMapping("/{memberId}/completed-courses")
-    public String addCompletedCourse(@PathVariable Long memberId,
-                                     @RequestParam Long courseId,
-                                     @RequestParam int grade) {
-        completedCourseService.createCompletedCourse(memberId, courseId, grade);
-        return "redirect:/api/members/" + memberId + "/completed-courses";
+        return ResponseEntity.ok(memberDTO);
     }
 
     // 이수과목 삭제
