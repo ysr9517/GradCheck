@@ -21,8 +21,9 @@ public class CompletedCourseController {
     private final CompletedCourseService completedCourseService;
     private final CourseService courseService;
     // 이수과목 조회
-    @GetMapping("/{memberId}/completed-courses")
-    public String getCompletedCourses(@PathVariable Long memberId, Model model) {
+    @GetMapping("/{memberName}/completed-courses")
+    public String getCompletedCourses(@PathVariable String memberName, Model model) {
+        Long memberId = memberService.getMemberByUsername(memberName).getId();
         List<CompletedCourseDto> completedCourses = completedCourseService.findAllCompletedCourses(memberId);
         model.addAttribute("completedCourses", completedCourses);
         model.addAttribute("memberId", memberId);
@@ -30,20 +31,22 @@ public class CompletedCourseController {
     }
 
     // 이수과목 추가
-    @PostMapping("/{memberId}/completed-courses")
-    public String addCompletedCourse(@PathVariable Long memberId,
+    @PostMapping("/{memberName}/completed-courses")
+    public String addCompletedCourse(@PathVariable String memberName,
                                      @RequestParam String courseName,
                                      @RequestParam int grade) {
+        Long memberId = memberService.getMemberByUsername(memberName).getId();
         CourseDto course = courseService.findCourseByName(courseName);
         completedCourseService.createCompletedCourse(memberId, course.getId(), grade);
-        return "redirect:/api/course/" + memberId + "/completed-courses";
+        return "redirect:/main";
     }
 
     // 이수과목 삭제
-    @PostMapping("/{memberId}/completed-courses/{courseId}/delete")
-    public String deleteCompletedCourse(@PathVariable Long memberId, @PathVariable Long courseId) {
+    @PostMapping("/{memberName}/completed-courses/{courseId}/delete")
+    public String deleteCompletedCourse(@PathVariable String memberName, @PathVariable Long courseId) {
+        Long memberId = memberService.getMemberByUsername(memberName).getId();
         completedCourseService.deleteCourse(memberId, courseId);
-        return "redirect:/api/course/" + memberId + "/completed-courses";
+        return "redirect:/main";
     }
 
 }

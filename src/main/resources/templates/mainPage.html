@@ -180,7 +180,7 @@
 
     <!-- 왼쪽 메뉴바 -->
     <div class="sidebar">
-        <div class="menu-item" onclick="loadContent('/api/course/1/completed-courses')">수강내역 조회/수정</div>
+        <div class="menu-item" onclick="loadContent('/api/course/memberName/completed-courses')">수강내역 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/curriculum')">커리큘럼 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/courses')">과목 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/graduation')">졸업요건 자가진단</div>
@@ -206,6 +206,11 @@
     function loadContent(url) {
         const contentDiv = document.getElementById('content');
 
+        // memberName이 포함된 URL인 경우, memberName을 동적으로 삽입
+        if (url.includes('memberName')) {
+            url = url.replace('memberName', window.memberName);
+        }
+
         // Fetch API를 사용하여 서버에서 HTML 로드
         fetch(url)
             .then(response => response.text())
@@ -228,6 +233,9 @@
             const decodedToken = JSON.parse(atob(token.split('.')[1])); // JWT 토큰을 디코딩
             const username = decodedToken.username; // 디코딩된 정보에서 username 추출
 
+            // 사용자 정보 업데이트
+            document.getElementById('memberName').innerText = username;
+
             // JWT 토큰이 존재하면, 이를 Authorization 헤더로 사용하여 API 호출
             fetch(`http://localhost:8080/api/member/me/${username}`, {
                 method: "GET",
@@ -248,6 +256,9 @@
                     document.getElementById('memberUniversity').innerText = data.university;
                     document.getElementById('memberDepartment').innerText = data.department;
                     document.getElementById('memberYear').innerText = data.admissionYear;
+
+                    // memberName을 전역 변수로 저장
+                    window.memberName = data.username;
                 })
                 .catch(error => {
                     console.error('사용자 정보 가져오기 오류:', error);
