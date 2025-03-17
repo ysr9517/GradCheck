@@ -1,12 +1,9 @@
 package com.gradcheck.grad_check.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gradcheck.grad_check.domain.Curriculum;
 import lombok.Getter;
-import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -15,22 +12,50 @@ public class CurriculumRequest {
     @JsonProperty("department")
     private String department;
 
-    @JsonProperty("admission_year")
+    @JsonProperty("admissionYear")
     private int admissionYear;
 
-    @JsonProperty("required_major_credits")
+    @JsonProperty("requiredMajorCredits")
     private int requiredMajorCredits;
 
-    @JsonProperty("required_general_credits")
+    @JsonProperty("requiredGeneralCredits")
     private int requiredGeneralCredits;
 
-    @JsonProperty("requiredmsc")
+    @JsonProperty("requiredMSC")
     private int requiredMSC;
 
-    @JsonProperty("requiredbsm")
+    @JsonProperty("requiredBSM")
     private int requiredBSM;
 
     private List<Long> courseIds;
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public void setAdmissionYear(int admissionYear) {
+        this.admissionYear = admissionYear;
+    }
+
+    public void setRequiredMajorCredits(int requiredMajorCredits) {
+        this.requiredMajorCredits = requiredMajorCredits;
+    }
+
+    public void setRequiredGeneralCredits(int requiredGeneralCredits) {
+        this.requiredGeneralCredits = requiredGeneralCredits;
+    }
+
+    public void setRequiredMSC(int requiredMSC) {
+        this.requiredMSC = requiredMSC;
+    }
+
+    public void setRequiredBSM(int requiredBSM) {
+        this.requiredBSM = requiredBSM;
+    }
+
+    public void setCourseIds(List<Long> courseIds) {
+        this.courseIds = courseIds;
+    }
 
     public Curriculum toEntity() {
         return Curriculum.builder()

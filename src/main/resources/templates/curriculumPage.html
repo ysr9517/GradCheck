@@ -21,6 +21,8 @@
         .main-container {
             display: flex;
             min-height: 100vh;
+
+            padding: 20px;
         }
 
         /* 왼쪽 메뉴바 */
@@ -30,10 +32,18 @@
             color: white;
             padding-top: 30px;
             padding-left: 20px;
+
+            position: fixed;
+            left: 20px;
+            top: 20px;
             height: 100vh; /* 전체 화면 높이 차지 */
+
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
 
         .menu-item {
@@ -78,6 +88,12 @@
             flex: 1;
             padding: 20px;
             background-color: #ffffff;
+
+            margin-left: 290px; /* 🔥 사이드바(250px) + 여백(20px) 고려 */
+            margin-right: 20px; /* 🔥 오른쪽에도 20px 여백 추가 */
+
+            border-radius: 8px; /* 🔥 콘텐츠도 둥글게 */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
 
         /* 테이블 스타일 */
@@ -204,17 +220,18 @@
     <!-- 오른쪽 콘텐츠 영역 -->
     <div class="content">
         <h2>커리큘럼 목록</h2>
+        <br>
         <table class="curriculum-table">
             <thead>
             <tr>
-                <th>커리큘럼 ID</th>
+                <th>커리큘럼<br>ID</th>
                 <th>학과</th>
                 <th>입학년도</th>
-                <th>필수 전공 학점</th>
-                <th>필수 교양 학점</th>
-                <th>필수 MSC 학점</th>
-                <th>필수 BSM 학점</th>
-                <th>커리큘럼 수정</th>
+                <th>필수 전공<br>학점</th>
+                <th>필수 교양<br>학점</th>
+                <th>필수 MSC<br>학점</th>
+                <th>필수 BSM<br>학점</th>
+                <th>커리큘럼<br>수정</th>
                 <th>포함 과목</th>
             </tr>
             </thead>
@@ -238,35 +255,69 @@
             </tbody>
         </table>
 
+        <br>
+        <br>
         <h3>새 커리큘럼 추가</h3>
-        <form class="add-curriculum-form" th:action="@{/curriculum}" method="post">
+        <br>
+        <form class="add-curriculum-form" id="curriculumForm">
             <div class="form-group">
                 <label>학과:</label>
-                <input type="text" name="department" required>
+                <input type="text" id="department" name="department" required>
             </div>
             <div class="form-group">
                 <label>입학년도:</label>
-                <input type="number" name="admissionYear" required>
+                <input type="number" id="admissionYear" name="admissionYear" required>
             </div>
             <div class="form-group">
                 <label>필수 전공 학점:</label>
-                <input type="text" name="requiredMajorCredits" required>
+                <input type="text" id="requiredMajorCredits" name="requiredMajorCredits" required>
             </div>
             <div class="form-group">
                 <label>필수 교양 학점:</label>
-                <input type="text" name="requiredGeneralCredits" required>
+                <input type="text" id="requiredGeneralCredits" name="requiredGeneralCredits" required>
             </div>
             <div class="form-group">
                 <label>필수 MSC 학점:</label>
-                <input type="text" name="requiredMSC" required>
+                <input type="text" id="requiredMSC" name="requiredMSC" required>
             </div>
             <div class="form-group">
                 <label>필수 BSM 학점:</label>
-                <input type="text" name="requiredBSM" required>
+                <input type="text" id="requiredBSM" name="requiredBSM" required>
             </div>
             <button type="submit" class="btn-submit">추가</button>
         </form>
     </div>
 </div>
+
+<script>
+    document.getElementById("curriculumForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const data = {
+            department: document.getElementById("department").value,
+            admissionYear: parseInt(document.getElementById("admissionYear").value),
+            requiredMajorCredits: parseInt(document.getElementById("requiredMajorCredits").value),
+            requiredGeneralCredits: parseInt(document.getElementById("requiredGeneralCredits").value),
+            requiredMSC: parseInt(document.getElementById("requiredMSC").value),
+            requiredBSM: parseInt(document.getElementById("requiredBSM").value)
+        };
+
+        fetch("/curriculum", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json()) // JSON 응답 처리
+            .then(() => {
+                alert("✅ 커리큘럼이 추가되었습니다!");
+                location.reload();
+            })
+            .catch(error => {
+                console.error("❌ 커리큘럼 추가 오류:", error);
+            });
+    });
+</script>
 </body>
 </html>

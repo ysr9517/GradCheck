@@ -71,11 +71,9 @@
 </head>
 <body>
 <h2>커리큘럼 과목 수정</h2>
+<br>
 
-<p th:text="'📌 전체 과목 개수: ' + ${#lists.size(allCourses)}"></p>
-
-
-<form th:action="@{/curriculum/{id}/update-courses(id=${curriculum.id})}" method="post">
+<form th:action="@{/curriculum/{id}/edit(id=${curriculum?.id})}" method="post">
     <table class="curriculum-course-table">
         <thead>
         <tr>
@@ -87,7 +85,8 @@
         <tbody>
         <tr th:each="course : ${allCourses}">
             <td class="checkbox-cell">
-                <input type="checkbox" name="courseIds" th:value="${course.id}" th:checked="${curriculumCourseIds.contains(course.id)}">
+                <input type="checkbox" name="courseIds" th:value="${course.id}"
+                       th:checked="${curriculumCourseIds != null and curriculumCourseIds.contains(course.id)}">
             </td>
             <td th:text="${course.id}"></td>
             <td th:text="${course.name}"></td>
