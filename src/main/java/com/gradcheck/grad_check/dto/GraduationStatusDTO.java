@@ -19,6 +19,7 @@ public class GraduationStatusDTO {
     private boolean mandatoryCoursesCompleted;
     private boolean graduationThesisStatus;
     private boolean humanRightsEducationCompleted;
+    private boolean graduationCertificationRequirements;
     private boolean isGraduationEligible;
 
 }

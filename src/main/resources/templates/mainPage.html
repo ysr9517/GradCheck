@@ -58,6 +58,12 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin-top: 30px;
             margin-right: 20px;
+            margin-bottom: 30px;
+        }
+
+        #logoutBtn {
+            margin-right:20px;
+            margin-bottom: 20px; /* 버튼과 하단 사이에 여백 추가 */
         }
 
         .info-box h3 {
@@ -183,7 +189,7 @@
         <div class="menu-item" onclick="loadContent('/api/course/memberName/completed-courses')">수강내역 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/curriculum')">커리큘럼 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/courses')">과목 조회/수정</div>
-        <div class="menu-item" onclick="loadContent('/api/graduation')">졸업요건 자가진단</div>
+        <div class="menu-item" onclick="loadContent('/api/graduation/memberName/graduationCheck')">졸업요건 자가진단</div>
         <div class="menu-item" onclick="loadContent('/api/member/memberName')">내정보 수정</div>
 
         <!-- 내 정보 박스 -->
@@ -193,7 +199,10 @@
             <p><strong>대학교:</strong> <span id="memberUniversity">로딩 중...</span></p>
             <p><strong>학과:</strong> <span id="memberDepartment">로딩 중...</span></p>
             <p><strong>입학년도:</strong> <span id="memberYear">로딩 중...</span></p>
+
         </div>
+
+        <button id="logoutBtn" class="btn-submit" onclick="logout()">로그아웃</button>
     </div>
 
     <!-- 오른쪽 콘텐츠 영역 -->
@@ -226,6 +235,15 @@
 
     // 초기 페이지 로드 (기본 페이지)
     window.onload = () => loadContent('/api/courses');
+
+    function logout() {
+        // 로컬 스토리지에서 토큰 삭제
+        localStorage.removeItem("token");
+
+        // 로그아웃 후 로그인 페이지로 리디렉션
+        alert("로그아웃 되었습니다.");
+        window.location.href = "/login";  // 로그인 페이지로 리디렉션
+    }
     document.addEventListener("DOMContentLoaded", function () {
         const token = localStorage.getItem("token"); // JWT 토큰 가져오기
 
@@ -257,7 +275,7 @@
                     document.getElementById('memberUniversity').innerText = data.university;
                     document.getElementById('memberDepartment').innerText = data.department;
                     document.getElementById('memberYear').innerText = data.admissionYear;
-                    
+
                     // memberName을 전역 변수로 저장
                     window.memberName = data.username;
                 })
