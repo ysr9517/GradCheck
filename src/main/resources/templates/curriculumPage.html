@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커리큘럼 리스트</title>
+    <style>
+        /* 기본 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* 전체 컨테이너 */
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+
+            padding: 20px;
+        }
+
+        /* 왼쪽 메뉴바 */
+        .sidebar {
+            width: 250px; /* 가로 길이 줄이기 */
+            background-color: #004080;
+            color: white;
+            padding-top: 30px;
+            padding-left: 20px;
+
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            height: 100vh; /* 전체 화면 높이 차지 */
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #002b50;
+            color: #ffd700; /* 고급스러운 황금색 효과 */
+        }
+
+        /* 내 정보 박스 */
+        .info-box {
+            background-color: #e9f4fc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            margin-right: 20px; /* 오른쪽 여백 추가 */
+        }
+
+        .info-box h3 {
+            margin-bottom: 15px;
+            color: #004080;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .info-box strong {
+            color: #004080;
+        }
+
+        /* 오른쪽 콘텐츠 영역 */
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+
+            margin-left: 290px; /* 🔥 사이드바(250px) + 여백(20px) 고려 */
+            margin-right: 20px; /* 🔥 오른쪽에도 20px 여백 추가 */
+
+            border-radius: 8px; /* 🔥 콘텐츠도 둥글게 */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 테이블 스타일 */
+        .curriculum-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .curriculum-table th {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .curriculum-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .curriculum-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* 버튼 스타일 */
+        .btn-edit, .btn-submit, .btn-c-edit, .btn-c-view {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .btn-edit, .btn-c-edit{
+            background-color: #28a745;
+        }
+
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+
+        .btn-c-edit:hover {
+            background-color: #218838;
+        }
+
+        .btn-c-view {
+            background-color: #555555;
+        }
+
+        .btn-c-view:hover {
+            background-color: #333333;
+        }
+
+        .btn-submit {
+            background-color: #007bff;
+        }
+
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+
+        /* 폼 스타일 */
+        .add-curriculum-form {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="checkbox"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+        }
+
+    </style>
+</head>
+<body>
+<!-- 전체 컨테이너 -->
+<div class="main-container">
+
+    <!-- 왼쪽 메뉴바 -->
+    <div class="sidebar">
+        <div class="menu-item">수강내역 조회/수정</div>
+        <div class="menu-item" th:onclick="|location.href='@{/curriculum}'|" style="cursor: pointer;">커리큘럼 조회/수정</div>
+        <div class="menu-item" th:onclick="|location.href='@{/main}'|" style="cursor: pointer;">과목 조회/수정</div>
+        <div class="menu-item">졸업요건 자가진단</div>
+
+        <!-- 내 정보 박스 -->
+        <div class="info-box">
+            <h3>내 정보</h3>
+            <p><strong>이름:</strong> 홍길동</p>
+            <p><strong>학번:</strong> 2021111234</p>
+            <p><strong>학과:</strong> 컴퓨터공학부</p>
+            <p><strong>입학년도:</strong> 2021</p>
+        </div>
+    </div>
+
+    <!-- 오른쪽 콘텐츠 영역 -->
+    <div class="content">
+        <h2>커리큘럼 목록</h2>
+        <br>
+        <table class="curriculum-table">
+            <thead>
+            <tr>
+                <th>커리큘럼<br>ID</th>
+                <th>학과</th>
+                <th>입학년도</th>
+                <th>필수 전공<br>학점</th>
+                <th>필수 교양<br>학점</th>
+                <th>필수 MSC<br>학점</th>
+                <th>필수 BSM<br>학점</th>
+                <th>커리큘럼<br>수정</th>
+                <th>포함 과목</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="curriculum : ${curriculums}">
+                <td th:text="${curriculum.id}"></td>
+                <td th:text="${curriculum.department}"></td>
+                <td th:text="${curriculum.admissionYear}"></td>
+                <td th:text="${curriculum.requiredMajorCredits}"></td>
+                <td th:text="${curriculum.requiredGeneralCredits}"></td>
+                <td th:text="${curriculum.requiredMSC}"></td>
+                <td th:text="${curriculum.requiredBSM}"></td>
+                <td>
+                    <a class="btn-edit" th:href="@{/curriculum/{id}/edit-info(id=${curriculum.id})}">수정</a>
+                </td>
+                <td>
+                    <a class="btn-c-view" th:href="@{/curriculum/{id}/view(id=${curriculum.id})}">조회</a>
+                    <a class="btn-c-edit" th:href="@{/curriculum/{id}/edit(id=${curriculum.id})}">수정</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <br>
+        <h3>새 커리큘럼 추가</h3>
+        <br>
+        <form class="add-curriculum-form" id="curriculumForm">
+            <div class="form-group">
+                <label>학과:</label>
+                <input type="text" id="department" name="department" required>
+            </div>
+            <div class="form-group">
+                <label>입학년도:</label>
+                <input type="number" id="admissionYear" name="admissionYear" required>
+            </div>
+            <div class="form-group">
+                <label>필수 전공 학점:</label>
+                <input type="text" id="requiredMajorCredits" name="requiredMajorCredits" required>
+            </div>
+            <div class="form-group">
+                <label>필수 교양 학점:</label>
+                <input type="text" id="requiredGeneralCredits" name="requiredGeneralCredits" required>
+            </div>
+            <div class="form-group">
+                <label>필수 MSC 학점:</label>
+                <input type="text" id="requiredMSC" name="requiredMSC" required>
+            </div>
+            <div class="form-group">
+                <label>필수 BSM 학점:</label>
+                <input type="text" id="requiredBSM" name="requiredBSM" required>
+            </div>
+            <button type="submit" class="btn-submit">추가</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById("curriculumForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const data = {
+            department: document.getElementById("department").value,
+            admissionYear: parseInt(document.getElementById("admissionYear").value),
+            requiredMajorCredits: parseInt(document.getElementById("requiredMajorCredits").value),
+            requiredGeneralCredits: parseInt(document.getElementById("requiredGeneralCredits").value),
+            requiredMSC: parseInt(document.getElementById("requiredMSC").value),
+            requiredBSM: parseInt(document.getElementById("requiredBSM").value)
+        };
+
+        fetch("/curriculum", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json()) // JSON 응답 처리
+            .then(() => {
+                alert("✅ 커리큘럼이 추가되었습니다!");
+                location.reload();
+            })
+            .catch(error => {
+                console.error("❌ 커리큘럼 추가 오류:", error);
+            });
+    });
+</script>
+</body>
+</html>
