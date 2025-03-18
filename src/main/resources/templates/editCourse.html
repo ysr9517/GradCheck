@@ -2,19 +2,83 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>과목 수정</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+            margin-right: 15px;
+            text-align: left;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: start;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
-<h2>과목 수정</h2>
-<form th:action="@{/api/courses/{id}(id=${course.id})}" th:object="${course}" method="post">
-
-    <label>과목명: <input type="text" th:field="*{name}" required></label><br>
-    <label>학점: <input type="number" th:field="*{credit}" required></label><br>
-    <label>카테고리: <input type="text" th:field="*{category}" required></label><br>
-    <label>학과: <input type="text" th:field="*{department}" required></label><br>
-    <label>필수 여부: <input type="checkbox" th:field="*{required}"></label><br>
-    <button type="submit">수정 완료</button>
-</form>
-<a href="/main">목록으로 돌아가기</a>
+<div class="container">
+    <h2>과목 수정</h2>
+    <form th:action="@{/api/courses/{id}(id=${course.id})}" th:object="${course}" method="post">
+        <label>과목명: <input type="text" th:field="*{name}" required></label>
+        <label>학점: <input type="number" th:field="*{credit}" required></label>
+        <label>카테고리: <input type="text" th:field="*{category}" required></label>
+        <label>학과: <input type="text" th:field="*{department}" required></label>
+        <div class="checkbox-container">
+            <label><input type="checkbox" th:field="*{required}"> 필수 여부</label>
+        </div>
+        <button type="submit">수정 완료</button>
+    </form>
+    <a href="/main">목록으로 돌아가기</a>
+</div>
 </body>
 </html>
