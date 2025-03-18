@@ -184,6 +184,7 @@
         <div class="menu-item" onclick="loadContent('/api/curriculum')">커리큘럼 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/courses')">과목 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/graduation')">졸업요건 자가진단</div>
+        <div class="menu-item" onclick="loadContent('/api/member/memberName')">내정보 수정</div>
 
         <!-- 내 정보 박스 -->
         <div class="info-box">
@@ -256,7 +257,7 @@
                     document.getElementById('memberUniversity').innerText = data.university;
                     document.getElementById('memberDepartment').innerText = data.department;
                     document.getElementById('memberYear').innerText = data.admissionYear;
-
+                    
                     // memberName을 전역 변수로 저장
                     window.memberName = data.username;
                 })

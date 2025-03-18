@@ -66,7 +66,7 @@ public class MemberService {
                 .orElseThrow(()->new RuntimeException("해당 id를 찾을 수 없습니다."));
         member = Member.builder()
                 .id(member.getId())
-                .username(memberdto.getUsername())
+                .username(member.getUsername())
                 .password(member.getPassword())
                 .university(memberdto.getUniversity())
                 .department(memberdto.getDepartment())

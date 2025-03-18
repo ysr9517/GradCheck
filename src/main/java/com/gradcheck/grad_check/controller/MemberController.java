@@ -52,42 +52,11 @@ public class MemberController {
     }
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MemberDTO> updateMember(@PathVariable Long id, @ModelAttribute MemberDTO memberDTO) {
-        return ResponseEntity.ok(memberService.updateMember(id, memberDTO));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/getmember")
-    public ResponseEntity<MemberDTO> getMember(Principal principal) {
-        String username = principal.getName();
-        MemberDTO memberDTO = memberService.getMemberByUsername(username);
-        return ResponseEntity.ok(memberDTO);
-    }
-
     @GetMapping("/me/{username}")
-    public ResponseEntity<MemberDTO> getMemberDetail(@PathVariable String username) {
+    public ResponseEntity<MemberDTO> getMebmberDetail(@PathVariable String username) {
         return ResponseEntity.ok(memberService.getMemberByUsername(username));
     }
 
-    //이수과목 찾기
-    @GetMapping("/{memberId}")
-    public List<CompletedCourseDto> getUserCompletedCourses(@PathVariable Long memberId) {
-        return completedCourseService.findAllCompletedCourses(memberId);
-    }
-
-
-    // 이수과목 삭제
-    @PostMapping("/{memberId}/completed-courses/{courseId}/delete")
-    public String deleteCompletedCourse(@PathVariable Long memberId, @PathVariable Long courseId) {
-        completedCourseService.deleteCourse(memberId, courseId);
-        return "redirect:/api/members/" + memberId + "/completed-courses";
-    }
 
 }
 
