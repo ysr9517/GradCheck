@@ -63,7 +63,7 @@
 
         #logoutBtn {
             margin-right:20px;
-            margin-bottom: 20px; /* 버튼과 하단 사이에 여백 추가 */
+            margin-bottom: 20px;
         }
 
         .info-box h3 {
@@ -191,6 +191,10 @@
         <div class="menu-item" onclick="loadContent('/api/courses')">과목 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/graduation/memberName/graduationCheck')">졸업요건 자가진단</div>
         <div class="menu-item" onclick="loadContent('/api/member/memberName')">내정보 수정</div>
+        <div class="menu-item">수강내역 조회/수정</div>
+        <div class="menu-item" th:onclick="|location.href='@{/curriculum}'|" style="cursor: pointer;">커리큘럼 조회/수정</div>
+        <div class="menu-item" th:onclick="|location.href='@{/main}'|" style="cursor: pointer;">과목 조회/수정</div>
+        <div class="menu-item">졸업요건 자가진단</div>
 
         <!-- 내 정보 박스 -->
         <div class="info-box">
