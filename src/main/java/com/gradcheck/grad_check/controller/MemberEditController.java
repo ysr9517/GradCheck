@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @Controller
 @Getter
 @RequiredArgsConstructor
@@ -26,7 +28,17 @@ public class MemberEditController {
 
     @PostMapping("/{memberName}")
     public String editUser(@PathVariable("memberName") String memberName,
-                           @ModelAttribute("memberDto") @Valid MemberDTO memberDto) {
+                           @RequestParam String university,
+                           @RequestParam String department,
+                           @RequestParam int admissionYear,
+                           @RequestParam LocalDate expectedGraduationDate,
+                           @RequestParam(required = false, defaultValue = "false") boolean isDoubleMajor) {
+        MemberDTO memberDto = MemberDTO.builder()
+                .university(university)
+                .department(department)
+                .admissionYear(admissionYear)
+                .expectedGraduationDate(expectedGraduationDate)
+                .build();
         MemberDTO member = memberService.getMemberByUsername(memberName);
         memberService.updateMember(member.getId(), memberDto);
         return "redirect:/main";

@@ -61,8 +61,18 @@ public class CourseController {
     // 과목 정보 수정
 //    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
-    public String updateCourse(@PathVariable Long id, @ModelAttribute("course") @Valid CourseDto courseDTO) {
-        courseService.updateCourse(id, courseDTO);
+    public String updateCourse(@PathVariable Long id, @RequestParam String name,
+                               @RequestParam int credit,
+                               @RequestParam String category,
+                               @RequestParam String department,
+                               @RequestParam(required = false, defaultValue = "false") boolean required) {
+        CourseDto courseDto = CourseDto.builder()
+                .name(name)
+                .credit(credit)
+                .category(category)
+                .department(department)
+                .build();
+        courseService.updateCourse(id, courseDto);
         return "redirect:/main";
     }
 
