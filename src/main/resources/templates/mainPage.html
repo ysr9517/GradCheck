@@ -187,14 +187,10 @@
     <!-- 왼쪽 메뉴바 -->
     <div class="sidebar">
         <div class="menu-item" onclick="loadContent('/api/course/memberName/completed-courses')">수강내역 조회/수정</div>
-        <div class="menu-item" onclick="loadContent('/api/curriculum')">커리큘럼 조회/수정</div>
+        <div class="menu-item" onclick="loadContent('/curriculum')">커리큘럼 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/courses')">과목 조회/수정</div>
         <div class="menu-item" onclick="loadContent('/api/graduation/memberName/graduationCheck')">졸업요건 자가진단</div>
         <div class="menu-item" onclick="loadContent('/api/member/memberName')">내정보 수정</div>
-        <div class="menu-item">수강내역 조회/수정</div>
-        <div class="menu-item" th:onclick="|location.href='@{/curriculum}'|" style="cursor: pointer;">커리큘럼 조회/수정</div>
-        <div class="menu-item" th:onclick="|location.href='@{/main}'|" style="cursor: pointer;">과목 조회/수정</div>
-        <div class="menu-item">졸업요건 자가진단</div>
 
         <!-- 내 정보 박스 -->
         <div class="info-box">
