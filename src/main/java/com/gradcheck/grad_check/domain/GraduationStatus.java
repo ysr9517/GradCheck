@@ -3,16 +3,14 @@ package com.gradcheck.grad_check.domain;
 import com.gradcheck.grad_check.dto.GraduationStatusDTO;
 import com.gradcheck.grad_check.dto.MemberDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 public class GraduationStatus {
     @Id
     @Column(name = "member_id")
@@ -32,10 +30,16 @@ public class GraduationStatus {
 
     private boolean mandatoryCoursesCompleted;
 
+    @Column(nullable = false)
     private boolean graduationThesisStatus;
 
+    @Column(nullable = false)
     private boolean humanRightsEducationCompleted;
 
+    @Column(nullable = false)
+    private boolean graduationCertificationRequirements;
+
+    @Column(nullable = false)
     private boolean isGraduationEligible;
 
     public GraduationStatusDTO toDTO(GraduationStatus graduationStatus) {
@@ -50,6 +54,7 @@ public class GraduationStatus {
                 .mandatoryCoursesCompleted(graduationStatus.isMandatoryCoursesCompleted())
                 .graduationThesisStatus(graduationStatus.isGraduationThesisStatus())
                 .humanRightsEducationCompleted(graduationStatus.isHumanRightsEducationCompleted())
+                .graduationCertificationRequirements(graduationStatus.isGraduationCertificationRequirements())
                 .isGraduationEligible(graduationStatus.isGraduationEligible())
                 .build();
     }

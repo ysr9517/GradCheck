@@ -12,8 +12,5 @@ public class GraduationCertification {
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
-    private Member memberGraduation;
-
-    //임시~~
-
+    private Member member;
 }
