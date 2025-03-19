@@ -23,26 +23,36 @@ public class CurriculumService {
     public CurriculumResponse getCurriculum(String department, int year) {
         Curriculum curriculum = curriculumRepository.findByDepartmentAndAdmissionYear(department, year)
                 .orElseThrow(() -> new RuntimeException("해당 커리큘럼을 찾을 수 없습니다."));
-        return new CurriculumResponse(curriculum);
+        return CurriculumResponse.from(curriculum);
     }
 
     // 모든 커리큘럼 조회
     public List<CurriculumResponse> getAllCurriculums() {
-        return curriculumRepository.findAll().stream()
-                .map(CurriculumResponse::new)
-                .collect(Collectors.toList());
+        List<Curriculum> curriculums = curriculumRepository.findAll();
+        List<CurriculumResponse> curriculumResponses = new ArrayList<>();
+        for (Curriculum curriculum : curriculums) {
+            curriculumResponses.add(CurriculumResponse.from(curriculum));
+        }
+        return curriculumResponses;
     }
 
     // 새 커리큘럼 생성
-    public CurriculumResponse createCurriculum(CurriculumRequest request) {
+    public CurriculumResponse createCurriculum(CurriculumResponse curriculumResponse) {
         // CurriculumRequest를 엔티티로 변환하고, CourseRepository를 전달하여 과목 목록을 설정
-        Curriculum curriculum = request.toEntity(courseRepository); // CourseRepository 전달
+        Curriculum curriculum = Curriculum.builder()
+                .department(curriculumResponse.getDepartment())
+                .admissionYear(curriculumResponse.getAdmissionYear())
+                .requiredMajorCredits(curriculumResponse.getRequiredMajorCredits())
+                .requiredGeneralCredits(curriculumResponse.getRequiredGeneralCredits())
+                .requiredMSC(curriculumResponse.getRequiredMSC())
+                .requiredBSM(curriculumResponse.getRequiredBSM())
+                .build();
 
         // 커리큘럼 저장
         Curriculum savedCurriculum = curriculumRepository.save(curriculum);
 
         // 저장된 커리큘럼을 CurriculumResponse로 변환하여 반환
-        return new CurriculumResponse(savedCurriculum);
+        return CurriculumResponse.from(savedCurriculum);
     }
 
 
@@ -68,7 +78,7 @@ public class CurriculumService {
 
         curriculumRepository.save(curriculum);
 
-        return new CurriculumResponse(curriculum);
+        return CurriculumResponse.from(curriculum);
 
     }
 
@@ -77,7 +87,7 @@ public class CurriculumService {
         Curriculum curriculum = curriculumRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 커리큘럼을 찾을 수 없습니다: " + id));
 
-        return new CurriculumResponse(curriculum);
+        return CurriculumResponse.from(curriculum);
     }
 
     public Curriculum getCurriculumEntityById(Long id) {
@@ -104,7 +114,7 @@ public class CurriculumService {
 
         curriculumRepository.save(curriculum);
 
-        return new CurriculumResponse(curriculum);
+        return CurriculumResponse.from(curriculum);
     }
 
     public List<Course> getAllCourses() {

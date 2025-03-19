@@ -139,30 +139,30 @@
     <br><br>
     <h3>새 커리큘럼 추가</h3>
     <br>
-    <form class="add-curriculum-form" id="curriculumForm">
+    <form class="add-curriculum-form" th:action="@{/curriculum}" method="post">
         <div class="form-group">
             <label>학과:</label>
-            <input type="text" id="department" name="department" required>
+            <input type="text"  name="department" required>
         </div>
         <div class="form-group">
             <label>입학년도:</label>
-            <input type="number" id="admissionYear" name="admissionYear" required>
+            <input type="number" name="admissionYear" required>
         </div>
         <div class="form-group">
             <label>필수 전공 학점:</label>
-            <input type="text" id="requiredMajorCredits" name="requiredMajorCredits" required>
+            <input type="number"  name="requiredMajorCredits" required>
         </div>
         <div class="form-group">
             <label>필수 교양 학점:</label>
-            <input type="text" id="requiredGeneralCredits" name="requiredGeneralCredits" required>
+            <input type="number"  name="requiredGeneralCredits" required>
         </div>
         <div class="form-group">
             <label>필수 MSC 학점:</label>
-            <input type="text" id="requiredMSC" name="requiredMSC" required>
+            <input type="number"  name="requiredMSC" required>
         </div>
         <div class="form-group">
             <label>필수 BSM 학점:</label>
-            <input type="text" id="requiredBSM" name="requiredBSM" required>
+            <input type="number"  name="requiredBSM" required>
         </div>
         <button type="submit" class="btn-submit">추가</button>
     </form>

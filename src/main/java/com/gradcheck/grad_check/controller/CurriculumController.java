@@ -45,12 +45,27 @@ public class CurriculumController {
 
     // 새 커리큘럼 추가
     @PostMapping
-    public ResponseEntity<CurriculumResponse> createCurriculum(@RequestBody CurriculumRequest request) {
+    public String createCurriculum(@RequestParam String department,
+                                   @RequestParam int admissionYear,
+                                   @RequestParam int requiredMajorCredits,
+                                   @RequestParam int requiredGeneralCredits,
+                                   @RequestParam int requiredMSC,
+                                   @RequestParam int requiredBSM
+    ) {
+        CurriculumResponse curriculumResponse = CurriculumResponse.builder()
+                .department(department)
+                .admissionYear(admissionYear)
+                .requiredMajorCredits(requiredMajorCredits)
+                .requiredGeneralCredits(requiredGeneralCredits)
+                .requiredMSC(requiredMSC)
+                .requiredBSM(requiredBSM)
+                .build();
+        curriculumService.createCurriculum(curriculumResponse);
         // 커리큘럼 생성 서비스 호출
-        CurriculumResponse createdCurriculum = curriculumService.createCurriculum(request);
+
 
         // 생성된 커리큘럼을 ResponseEntity로 반환
-        return ResponseEntity.ok(createdCurriculum);
+        return "redirect:/main";
     }
 
 

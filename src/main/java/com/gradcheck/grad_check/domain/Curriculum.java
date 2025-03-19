@@ -25,7 +25,7 @@ public class Curriculum {
     private int requiredGeneralCredits;
     private int requiredMSC;
     private int requiredBSM;
-    private int requiredCourses;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
