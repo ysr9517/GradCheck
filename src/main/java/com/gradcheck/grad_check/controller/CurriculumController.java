@@ -25,17 +25,13 @@ public class CurriculumController {
     private final CourseRepository courseRepository;
     private final CurriculumRepository curriculumRepository;
 
-
-    // 특정 학과 및 입학년도 커리큘럼 조회
     @GetMapping("/{department}/{year}")
-    public String getCurriculum(
-            @PathVariable String department, @PathVariable int year, Model model) {
+    public String getCurriculum(@PathVariable String department, @PathVariable int year, Model model) {
         CurriculumResponse curriculum = curriculumService.getCurriculum(department, year);
         model.addAttribute("curriculum", curriculum);
         return "curriculum-detail";
     }
 
-    // 모든 커리큘럼 조회
     @GetMapping
     public String getAllCurriculums(Model model) {
         List<CurriculumResponse> curriculums = curriculumService.getAllCurriculums();
@@ -43,15 +39,13 @@ public class CurriculumController {
         return "curriculum";
     }
 
-    // 새 커리큘럼 추가
     @PostMapping
     public String createCurriculum(@RequestParam String department,
                                    @RequestParam int admissionYear,
                                    @RequestParam int requiredMajorCredits,
                                    @RequestParam int requiredGeneralCredits,
                                    @RequestParam int requiredMSC,
-                                   @RequestParam int requiredBSM
-    ) {
+                                   @RequestParam int requiredBSM) {
         CurriculumResponse curriculumResponse = CurriculumResponse.builder()
                 .department(department)
                 .admissionYear(admissionYear)
@@ -61,15 +55,9 @@ public class CurriculumController {
                 .requiredBSM(requiredBSM)
                 .build();
         curriculumService.createCurriculum(curriculumResponse);
-        // 커리큘럼 생성 서비스 호출
-
-
-        // 생성된 커리큘럼을 ResponseEntity로 반환
         return "redirect:/main";
     }
 
-
-    // 커리큘럼 과목 조회 페이지
     @GetMapping("/{id}/view")
     public String viewCurriculum(@PathVariable Long id, Model model) {
         List<Course> courses = curriculumService.getCoursesByCurriculumId(id);
@@ -78,52 +66,34 @@ public class CurriculumController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editCurriculum(@PathVariable Long id,
-                                 Model model) {
+    public String editCurriculum(@PathVariable Long id, Model model) {
         Curriculum curriculum = curriculumService.getCurriculumEntityById(id);
-
-        // 📌 서비스에서 모든 과목 가져오기
         List<Course> allCourses = curriculumService.getAllCourses();
-
-        // 📌 현재 커리큘럼에 등록된 과목 ID 목록 추출
         List<Long> curriculumCourseIds = curriculum.getCourses()
                 .stream()
                 .map(Course::getId)
                 .collect(Collectors.toList());
-
-        // 📌 Model에 추가
         model.addAttribute("curriculum", curriculum);
         model.addAttribute("allCourses", allCourses);
         model.addAttribute("curriculumCourseIds", curriculumCourseIds);
-        return "curriculum-edit"; // 전체 페이지를 반환
+        return "curriculum-edit";
     }
 
-    // 업데이트
     @PostMapping("/{id}/edit")
-    public String updateCurriculumEdit(@PathVariable Long id,
-                                       @RequestParam(required = false) List<Long> courseIds) {
-        // 기존 커리큘럼 가져오기
+    public String updateCurriculumEdit(@PathVariable Long id, @RequestParam(required = false) List<Long> courseIds) {
         Curriculum existingCurriculum = curriculumService.getCurriculumEntityById(id);
-
-        // 기존 데이터를 유지하면서 과목만 업데이트
         curriculumService.updateCurriculumCourses(id, courseIds != null ? courseIds : new ArrayList<>());
-
-        return "redirect:/main"; // 저장 후 목록 페이지로 이동
+        return "redirect:/main";
     }
 
-
-
-    // 커리큘럼 수정
     @GetMapping("/{id}/edit-info")
     public String editCurriculumInfo(@PathVariable Long id, Model model) {
         Curriculum curriculum = curriculumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 커리큘럼을 찾을 수 없습니다."));
-
         model.addAttribute("curriculum", curriculum);
-        return "curriculum-edit-info"; // 새로 만들 페이지
+        return "curriculum-edit-info";
     }
 
-    // 커리큘럼 정보 업데이트
     @PostMapping("/{id}/update-info")
     public String updateCurriculumInfo(@PathVariable Long id,
                                        @RequestParam String department,
@@ -134,37 +104,26 @@ public class CurriculumController {
                                        @RequestParam Integer requiredBSM) {
         Curriculum curriculum = curriculumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("해당 커리큘럼을 찾을 수 없습니다."));
-
-        // 커리큘럼 정보 업데이트
         curriculum.setDepartment(department);
         curriculum.setAdmissionYear(admissionYear);
         curriculum.setRequiredMajorCredits(requiredMajorCredits);
         curriculum.setRequiredGeneralCredits(requiredGeneralCredits);
         curriculum.setRequiredMSC(requiredMSC);
         curriculum.setRequiredBSM(requiredBSM);
-
-        curriculumRepository.save(curriculum); // 📌 저장
-
-        return "redirect:/main"; // 수정 후 목록으로 이동
+        curriculumRepository.save(curriculum);
+        return "redirect:/main";
     }
 
     @PutMapping("/{id}/courses")
-    public ResponseEntity<CurriculumResponse> updateCurriculumCourses(
-            @PathVariable Long id,
-            @RequestBody(required = false) List<Long> courseIds // null 허용
-    ) {
-        // 기존 커리큘럼 가져오기
+    public ResponseEntity<CurriculumResponse> updateCurriculumCourses(@PathVariable Long id,
+                                                                      @RequestBody(required = false) List<Long> courseIds) {
         Curriculum existingCurriculum = curriculumService.getCurriculumEntityById(id);
-
         if (existingCurriculum == null) {
-            return ResponseEntity.notFound().build(); // 커리큘럼이 없으면 404 응답
+            return ResponseEntity.notFound().build();
         }
-
         if (courseIds == null) {
-            courseIds = new ArrayList<>(); // courseIds가 null이면 빈 리스트로 초기화
+            courseIds = new ArrayList<>();
         }
-
-        // 기존 커리큘럼의 학과, 입학년도 등 기본 정보 유지하면서 과목 업데이트
         CurriculumRequest request = new CurriculumRequest();
         request.setDepartment(existingCurriculum.getDepartment());
         request.setAdmissionYear(existingCurriculum.getAdmissionYear());
@@ -172,27 +131,15 @@ public class CurriculumController {
         request.setRequiredGeneralCredits(existingCurriculum.getRequiredGeneralCredits());
         request.setRequiredMSC(existingCurriculum.getRequiredMSC());
         request.setRequiredBSM(existingCurriculum.getRequiredBSM());
-
-        // 기존 정보 유지하면서 업데이트 수행
-        curriculumService.updateCurriculum(id, request); // 기본 정보 업데이트
-        CurriculumResponse updatedCurriculum = curriculumService.updateCurriculumCourses(id, courseIds); // 과목 업데이트
-
+        curriculumService.updateCurriculum(id, request);
+        CurriculumResponse updatedCurriculum = curriculumService.updateCurriculumCourses(id, courseIds);
         return ResponseEntity.ok(updatedCurriculum);
     }
 
-
     @GetMapping("/main")
     public String mainPage(Model model) {
-        // 커리큘럼 데이터 가져오기
         List<CurriculumResponse> curriculums = curriculumService.getAllCurriculums();
-
-        // 모델에 커리큘럼 데이터 추가
         model.addAttribute("curriculums", curriculums);
-
-        return "main"; // main.html로 이동
+        return "main";
     }
-
-
-
-//
 }
