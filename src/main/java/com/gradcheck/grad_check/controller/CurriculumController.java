@@ -69,17 +69,6 @@ public class CurriculumController {
     }
 
 
-
-
-    // 커리큘럼 업데이트 처리
-    @PutMapping("/{id}/update")
-    public ResponseEntity<CurriculumResponse> updateCurriculum(@PathVariable Long id,
-                                                               @RequestBody CurriculumRequest request) {
-        CurriculumResponse updatedCurriculum = curriculumService.updateCurriculum(id, request);  // 업데이트된 커리큘럼 반환
-        return ResponseEntity.ok(updatedCurriculum);  // 업데이트된 커리큘럼 반환
-    }
-
-
     // 커리큘럼 과목 조회 페이지
     @GetMapping("/{id}/view")
     public String viewCurriculum(@PathVariable Long id, Model model) {
