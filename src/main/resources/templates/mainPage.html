@@ -216,22 +216,35 @@
     function loadContent(url) {
         const contentDiv = document.getElementById('content');
 
-        // memberName이 포함된 URL인 경우, memberName을 동적으로 삽입
-        if (url.includes('memberName')) {
-            url = url.replace('memberName', window.memberName);
-        }
+        // 'curriculum'이 URL에 포함되어 있을 때 커리큘럼 콘텐츠를 로드
+        if (url.includes('curriculum')) {
+            fetch('/curriculum')  // 커리큘럼 관련 URL 확인
+                .then(response => response.text())
+                .then(data => {
+                    contentDiv.innerHTML = data;  // 커리큘럼 콘텐츠를 오른쪽 콘텐츠 영역에 삽입
+                })
+                .catch(error => {
+                    console.error('Error loading curriculum content:', error);
+                    contentDiv.innerHTML = '<p>커리큘럼 콘텐츠를 로드하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>';
+                });
+        } else {
+            // 'memberName'이 포함된 URL인 경우, memberName을 동적으로 삽입
+            if (url.includes('memberName')) {
+                url = url.replace('memberName', window.memberName);  // memberName 동적 삽입
+            }
 
-        // Fetch API를 사용하여 서버에서 HTML 로드
-        fetch(url)
-            .then(response => response.text())
-            .then(data => {
-                contentDiv.innerHTML = data; // 오른쪽 콘텐츠 영역 업데이트
-            })
-            .catch(error => {
-                console.error('Error loading content:', error);
-                contentDiv.innerHTML = '<p>콘텐츠를 로드하는 중 오류가 발생했습니다.</p>';
-            });
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    contentDiv.innerHTML = data;  // 콘텐츠 로드
+                })
+                .catch(error => {
+                    console.error('Error loading content:', error);
+                    contentDiv.innerHTML = '<p>콘텐츠를 로드하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>';
+                });
+        }
     }
+
 
     // 초기 페이지 로드 (기본 페이지)
     window.onload = () => loadContent('/api/courses');

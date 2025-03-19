@@ -33,11 +33,18 @@ public class CurriculumService {
                 .collect(Collectors.toList());
     }
 
+    // 새 커리큘럼 생성
     public CurriculumResponse createCurriculum(CurriculumRequest request) {
-        Curriculum curriculum = request.toEntity();  // DTO에서 변환
+        // CurriculumRequest를 엔티티로 변환하고, CourseRepository를 전달하여 과목 목록을 설정
+        Curriculum curriculum = request.toEntity(courseRepository); // CourseRepository 전달
+
+        // 커리큘럼 저장
         Curriculum savedCurriculum = curriculumRepository.save(curriculum);
+
+        // 저장된 커리큘럼을 CurriculumResponse로 변환하여 반환
         return new CurriculumResponse(savedCurriculum);
     }
+
 
 
     public CurriculumResponse updateCurriculum(Long id, CurriculumRequest request) {

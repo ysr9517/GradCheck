@@ -73,7 +73,7 @@
 <h2>커리큘럼 과목 수정</h2>
 <br>
 
-<form th:action="@{/curriculum/{id}/edit(id=${curriculum?.id})}" method="post">
+<form id="editCurriculumForm" th:action="@{/curriculum/{id}/edit(id=${curriculum?.id})}" method="post">
     <table class="curriculum-course-table">
         <thead>
         <tr>
@@ -97,9 +97,8 @@
     <!-- 버튼 컨테이너 -->
     <div class="btn-container">
         <button type="submit" class="btn-save">저장</button>
-        <a th:href="@{/curriculum}" class="btn-list">목록</a>
+        <a class="btn-list" href="/main">목록</a>
     </div>
 </form>
-
 </body>
 </html>

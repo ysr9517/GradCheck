@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gradcheck.grad_check.domain.Curriculum;
 import lombok.Getter;
 
-import java.time.LocalDate;
-
 @Getter
 public class CurriculumResponse {
 

@@ -1,7 +1,9 @@
 package com.gradcheck.grad_check.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gradcheck.grad_check.domain.Course;
 import com.gradcheck.grad_check.domain.Curriculum;
+import com.gradcheck.grad_check.repository.CourseRepository;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,22 +11,16 @@ import java.util.List;
 @Getter
 public class CurriculumRequest {
 
-    @JsonProperty("department")
     private String department;
 
-    @JsonProperty("admissionYear")
     private int admissionYear;
 
-    @JsonProperty("requiredMajorCredits")
     private int requiredMajorCredits;
 
-    @JsonProperty("requiredGeneralCredits")
     private int requiredGeneralCredits;
 
-    @JsonProperty("requiredMSC")
     private int requiredMSC;
 
-    @JsonProperty("requiredBSM")
     private int requiredBSM;
 
     private List<Long> courseIds;
@@ -57,7 +53,10 @@ public class CurriculumRequest {
         this.courseIds = courseIds;
     }
 
-    public Curriculum toEntity() {
+    public Curriculum toEntity(CourseRepository courseRepository) {
+        // CourseRepository를 통해 실제 과목을 DB에서 찾아서 설정
+        List<Course> selectedCourses = courseRepository.findAllById(courseIds);
+
         return Curriculum.builder()
                 .department(department)
                 .admissionYear(admissionYear)
@@ -65,7 +64,12 @@ public class CurriculumRequest {
                 .requiredGeneralCredits(requiredGeneralCredits)
                 .requiredMSC(requiredMSC)
                 .requiredBSM(requiredBSM)
+                .courses(selectedCourses) // 과목 목록을 추가
                 .build();
     }
+
+
+
+
 
 }
