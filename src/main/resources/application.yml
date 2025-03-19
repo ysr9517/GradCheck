@@ -6,9 +6,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://grad-check.mysql.database.azure.com:3306/gradcheck
-    username: gradcheck
-    password: M9@Lp$3Xv!Kw5#t
+    url: ${GRAD_CHECK_DB_URL}
+    username: ${GRAD_CHECK_DB_USERNAME}
+    password: ${GRAD_CHECK_DB_PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
@@ -17,4 +17,4 @@ spring:
 
 # jwt
 jwt:
-  secret: fF8yY1p9T3h5Q2VqM3hMVm5ZRmdYd2VBTk9BRXhZVlU
+  secret: ${GRAD_CHECK_JWT_SECRET}
